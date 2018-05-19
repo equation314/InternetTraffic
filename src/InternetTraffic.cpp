@@ -63,12 +63,15 @@ void InternetTraffic::startup(const string& dataDir)
 
 SolutionList InternetTraffic::query(const Node* src, const Node* dst)
 {
+    printf("Current passenger's route: %s -> %s\n", src->toString().c_str(),
+           dst->toString().c_str());
     SolutionList list;
     for (auto car : m_cars)
     {
         Solution sol = car->query(src, dst, m_map);
         if (sol.isOk())
             list.push_back(sol);
+
         if (list.size() == 5)
             break;
     }

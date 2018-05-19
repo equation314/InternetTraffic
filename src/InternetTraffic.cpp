@@ -66,8 +66,11 @@ SolutionList InternetTraffic::query(const Node* src, const Node* dst)
     SolutionList list;
     for (auto car : m_cars)
     {
-        Solution sol = car->query(src, dst);
-        if (sol.isOk()) list.push_back(sol);
+        Solution sol = car->query(src, dst, m_map);
+        if (sol.isOk())
+            list.push_back(sol);
+        if (list.size() == 5)
+            break;
     }
     return list;
 }

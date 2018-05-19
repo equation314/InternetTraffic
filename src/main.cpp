@@ -6,7 +6,7 @@ int main()
 
     engine->startup("../data");
 
-    int srcId = 2333, dstId = 6666;
+    int srcId = 2333, dstId = 2334;
     const Node* src = engine->getMap()->getNode(srcId);
     const Node* dst = engine->getMap()->getNode(dstId);
     SolutionList res = engine->query(src, dst);

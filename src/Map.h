@@ -26,6 +26,8 @@ public:
         return id >= m_node_count ? nullptr : m_nodes[id];
     }
 
+    double distance(const Node* a, const Node* b) const;
+
     void load(const std::string& nodeDataFile, const std::string& edgeDataFile);
 
 private:

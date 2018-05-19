@@ -43,3 +43,8 @@ void Map::load(const string& nodeDataFile, const string& edgeDataFile)
 
     fclose(f);
 }
+
+double Map::distance(const Node* a, const Node* b) const
+{
+    return a->earthDistanceTo(b);
+}

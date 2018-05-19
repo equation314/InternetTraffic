@@ -16,7 +16,8 @@ InternetTraffic::InternetTraffic() : m_map(new Map())
 InternetTraffic::~InternetTraffic()
 {
     delete m_map;
-    for (auto car : m_cars) delete car;
+    for (auto car : m_cars)
+        delete car;
 }
 
 void InternetTraffic::loadCars(const string& dataFile)
@@ -58,4 +59,15 @@ void InternetTraffic::startup(const string& dataDir)
 
     m_map->load(dataDir + "/" + NODE_DATA, dataDir + "/" + EDGE_DATA);
     loadCars(dataDir + "/" + CAR_DATA);
+}
+
+SolutionList InternetTraffic::query(const Node* src, const Node* dst)
+{
+    SolutionList list;
+    for (auto car : m_cars)
+    {
+        Solution sol = car->query(src, dst);
+        if (sol.isOk()) list.push_back(sol);
+    }
+    return list;
 }

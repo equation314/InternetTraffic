@@ -1,7 +1,8 @@
-#ifndef LOCATION_H
-#define LOCATION_H
+#ifndef NODE_H
+#define NODE_H
 
 #include <cmath>
+#include <vector>
 #include <string>
 
 struct Location
@@ -23,4 +24,13 @@ struct Location
     std::string toString() const;
 };
 
-#endif // LOCATION_H
+struct Node : public Location
+{
+    Node(int id, double x, double y) : Location(x, y), id(id) {}
+
+    int id;
+};
+
+typedef std::vector<const Node*> NodeList;
+
+#endif // NODE_H

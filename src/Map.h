@@ -2,16 +2,8 @@
 #define MAP_H
 
 #include <string>
-#include <vector>
 
-#include "Location.h"
-
-struct Node : public Location
-{
-    Node(int id, double x, double y) : Location(x, y), id(id) {}
-
-    int id;
-};
+#include "Node.h"
 
 struct Edge
 {
@@ -21,7 +13,6 @@ struct Edge
     int len;
 };
 
-typedef std::vector<const Node*> NodeList;
 typedef std::vector<const Edge*> EdgeList;
 
 class Map

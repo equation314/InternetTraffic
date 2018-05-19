@@ -11,8 +11,10 @@ Map::Map()
 
 Map::~Map()
 {
-    for (auto node : m_nodes) delete node;
-    for (auto edge : m_edges) delete edge;
+    for (auto node : m_nodes)
+        delete node;
+    for (auto edge : m_edges)
+        delete edge;
 }
 
 void Map::load(const string& nodeDataFile, const string& edgeDataFile)

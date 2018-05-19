@@ -19,3 +19,9 @@ void Car::print() const
         printf("%s, ", node->toString().c_str());
     printf("]\n");
 }
+
+Solution Car::query(const Node* src, const Node* dst) const
+{
+    if (m_id > 5 || m_passenger_count >= 4) return Solution();
+    return Solution(this, m_passengers, 5, 5, 5);
+}

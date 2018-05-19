@@ -1,16 +1,61 @@
 #include <cstdio>
+#include <assert.h>
 
 #include "InternetTraffic.h"
 
-InternetTraffic::InternetTraffic()
+using namespace std;
+
+const char CAR_DATA[] = "car.txt";
+const char NODE_DATA[] = "road.cnode";
+const char EDGE_DATA[] = "road.nedge";
+
+InternetTraffic::InternetTraffic() : m_map(new Map())
 {
 }
 
 InternetTraffic::~InternetTraffic()
 {
+    delete m_map;
+    for (auto car : m_cars) delete car;
 }
 
-void InternetTraffic::startup()
+void InternetTraffic::loadCars(const string& dataFile)
+{
+    printf("Loading cars data...\n");
+
+    m_cars.clear();
+
+    FILE* f = fopen(dataFile.c_str(), "r");
+
+    int id, n, nodeId;
+    double x, y;
+    for (int i = 0;
+         fscanf(f, "%d %d %lf,%lf,%d", &id, &n, &x, &y, &nodeId) != EOF; i++)
+    {
+        assert(i == id);
+
+        const Node* node = m_map->getNode(nodeId);
+        assert(node != nullptr && node->x == x && node->y == y);
+
+        NodeList passengers;
+        for (int j = 0; j < n; j++)
+        {
+            fscanf(f, "%lf,%lf,%d", &x, &y, &nodeId);
+            const Node* node = m_map->getNode(nodeId);
+            assert(node != nullptr && node->x == x && node->y == y);
+            passengers.push_back(node);
+        }
+
+        Car* car = new Car(id, node, passengers);
+        m_cars.push_back(car);
+    }
+    fclose(f);
+}
+
+void InternetTraffic::startup(const string& dataDir)
 {
     printf("Internet traffic system is starting...\n");
+
+    m_map->load(dataDir + "/" + NODE_DATA, dataDir + "/" + EDGE_DATA);
+    loadCars(dataDir + "/" + CAR_DATA);
 }

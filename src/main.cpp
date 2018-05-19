@@ -3,7 +3,7 @@
 int main()
 {
     InternetTraffic* engine = new InternetTraffic();
-    engine->startup();
+    engine->startup("../data");
     delete engine;
     return 0;
 }

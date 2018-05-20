@@ -1,0 +1,3 @@
+[submodule "thirdparty/GTree"]
+	path = thirdparty/GTree
+	url = https://github.com/TsinghuaDatabaseGroup/GTree

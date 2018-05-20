@@ -1,3 +1,5 @@
+test
+__pycache__
 data/car.txt
 data/road.cnode
 data/road.nedge

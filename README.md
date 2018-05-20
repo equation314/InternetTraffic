@@ -15,3 +15,12 @@ make
 ```
 ./main
 ```
+
+## Run as web server
+
+```
+cd server
+python manage.py runserver [0.0.0.0:PORT]
+```
+
+The default port is `8000`.

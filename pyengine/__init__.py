@@ -1,5 +1,9 @@
 """
 Python wrapper for C++ backend.
+Usage:
+1. call init(dir) with the dir of the data
+2. call search_id(srcID, dstID) to get the solution. The return type is defined in `solution.py`.
+3. call destroy() if all the query are finished.
 """
 import sys
 sys.path.insert(0, "pyengine")

@@ -56,6 +56,7 @@ PyObject* search(int srcID, int dstID) {
         PyObject *node_x = PyList_New(0);
         PyObject *node_y = PyList_New(0);
         PyObject *node_id = PyList_New(0);
+        PyObject *pass_id = PyList_New(0);
 
         // add car id
         PyList_Append(single_sol, Py_BuildValue("i", sol.car->getId()));
@@ -64,6 +65,11 @@ PyObject* search(int srcID, int dstID) {
         PyList_Append(single_sol, Py_BuildValue("i", sol.car->getPos()->x));
         PyList_Append(single_sol, Py_BuildValue("i", sol.car->getPos()->y));
         
+        for(auto iter = sol.car->getPassenger()->begin(); iter != sol.car->getPassenger()->end(); iter++) {
+            PyList_Append(single_sol, Py_BuildValue("i", (*iter)->id));
+        }
+
+
         for(auto iter = sol.order.begin(); iter != sol.order.end(); iter++) {
             PyList_Append(node_id, Py_BuildValue("i", (*iter)->id));
             PyList_Append(node_x, Py_BuildValue("d",  (*iter)->x));

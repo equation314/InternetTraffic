@@ -15,6 +15,8 @@ public:
     int getId() const { return m_id; }
 
     const Node* getPos() const { return m_pos; }
+    
+    const NodeList* getPassenger() const {return &m_passengers;}
 
     void print() const;
 

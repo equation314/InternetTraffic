@@ -1,0 +1,16 @@
+body {
+  margin: 0;
+  font: 13px/1.5 "Microsoft YaHei", "Helvetica Neue", "Sans-Serif";
+  min-height: 960px;
+  min-width: 600px;
+}
+
+.my-map {
+  margin: 0 auto;
+  width: 600px;
+  height: 600px;
+}
+
+.amap-container {
+  height: 100%;
+}

@@ -5,12 +5,17 @@ Usage:
 2. call search_id(srcID, dstID) to get the solution. The return type is defined in `solution.py`.
 3. call destroy() if all the query are finished.
 """
-import sys
+import sys, platform
 sys.path.insert(0, "pyengine")
 import ctypes
 from solution import SolutionList
 
-lib = ctypes.cdll.LoadLibrary("build/src/libengine.so")   
+EXT_NAME = {
+    'Darwin': 'dylib',
+    'Linux': 'so',
+    'Windows': 'dll',
+}
+lib = ctypes.cdll.LoadLibrary("build/src/libengine.%s" % EXT_NAME[platform.system()])
 
 engine_search_id_ = lib.search_id
 engine_search_id_.restype = ctypes.py_object

@@ -27,6 +27,8 @@
 #add_library(gptree ${CMAKE_CURRENT_SOURCE_DIR}/GTree/src/gtree_new_p2p/GPTree.cpp)
 #target_link_libraries(gptree metis)
 
-execute_process (COMMAND bash -c "cd ../thirdparty/metis && make config prefix=../../../../build/ && make install")
-execute_process (COMMAND g++ -std=c++0x -O2 ../thirdparty/GTree/src/gtree_new_p2p/GPTree.cpp -L/usr/local/lib/ -L./lib/ -I./include/ -lmetis -o gptree)
+#execute_process (COMMAND bash -c "cd ../thirdparty/metis && make config prefix=../../../../build/ && make install")
+execute_process (COMMAND g++ -std=c++0x -O2 ../thirdparty/GTree/src/gtree_new_p2p/GPTree.cpp -L/usr/local/lib/ -L./lib/ -I./include/ -lmetis -o GPTree)
 execute_process (COMMAND g++ -std=c++0x -O2 -shared -fPIC ../thirdparty/GTree/src/gtree_new_p2p/GPTree.cpp -L/usr/local/lib/ -L./lib/ -I./include/ -lmetis -o lib/libgptree.so)
+#execute_process (COMMAND g++ -std=c++0x -O2 ../thirdparty/GTree/src/gtree_new_p2p/GPTree.cpp -L/usr/local/lib/ -L./lib/ -I./include/ -lmetis -c -o libgptree.o)
+#execute_process (COMMAND ar -cr lib/libgptree.a libgptree.o lib/libmetis.a)

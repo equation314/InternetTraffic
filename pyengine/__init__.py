@@ -52,7 +52,6 @@ def get_node_in_map(x, y):
     res = engine_get_node_in_map_(*PARAM)
     return res
 
-
 def test(dataDir):
     print("Test init")
     init(dataDir)
@@ -60,9 +59,11 @@ def test(dataDir):
     res = get_node_in_map(110.0, 40.5)
     print(res)
     print("Test search id")
-    sol = search_id(2333, 2334)
+    for i in range(100):
+        sol = search_id(2333, 2334)
     print("Test search (x,y)")
-    sol = search_xy(110.0, 40.5, 110.2, 40.7)
+    for i in range(100):
+        sol = search_xy(110.0, 40.5, 110.2, 40.7)
     print("Test destory")
     destroy()
     print("Done")

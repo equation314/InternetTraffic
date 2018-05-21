@@ -92,13 +92,13 @@ PyObject* search_node(const Node *src, const Node *dst) {
     SolutionList res = engine->query(src, dst);
     printf("[*] Total solution number: %d\n", res.size());
     for (auto sol : res) {
-        PyObject *single_sol = PyList_New(0);
-        PyObject *node_x = PyList_New(0);
-        PyObject *node_y = PyList_New(0);
-        PyObject *node_id = PyList_New(0);
-        PyObject *pass_id = PyList_New(0);
-        PyObject *pass_x = PyList_New(0);
-        PyObject *pass_y = PyList_New(0);
+        PyObject *single_sol    = PyList_New(0);
+        PyObject *node_x        = PyList_New(0);
+        PyObject *node_y        = PyList_New(0);
+        PyObject *node_id       = PyList_New(0);
+        PyObject *pass_id       = PyList_New(0);
+        PyObject *pass_x        = PyList_New(0);
+        PyObject *pass_y        = PyList_New(0);
 
         // add car id
         PyList_Append(single_sol, Py_BuildValue("i", sol.car->getId()));
@@ -133,6 +133,14 @@ PyObject* search_node(const Node *src, const Node *dst) {
         PyList_Append(single_sol, node_y    );
 
         PyList_Append(ret, single_sol);
+
+        Py_DECREF(single_sol);
+        Py_DECREF(node_x    );
+        Py_DECREF(node_y    );
+        Py_DECREF(node_id   );
+        Py_DECREF(pass_id   );
+        Py_DECREF(pass_x    );
+        Py_DECREF(pass_y    );
     }
     return ret;
 }

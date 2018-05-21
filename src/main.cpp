@@ -1,7 +1,12 @@
 #include "InternetTraffic.h"
 
+extern void tree_search(int S, int T);
+extern void tree_setup();
+
 int main()
 {
+    tree_setup();
+
     InternetTraffic* engine = new InternetTraffic();
 
     engine->startup("../data");
@@ -15,5 +20,7 @@ int main()
         sol.print();
 
     delete engine;
+
+
     return 0;
 }

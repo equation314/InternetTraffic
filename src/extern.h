@@ -48,6 +48,16 @@ int init(const char *dir) {
     return 0;
 }
 
+PyObject* get_node_in_map(double x, double y) {
+    const Node *cur = engine->getMap()->getNode(x, y);
+    PyObject *res = PyList_New(0);
+    PyList_Append(res, Py_BuildValue("i", cur->id));
+    PyList_Append(res, Py_BuildValue("d", cur->x));
+    PyList_Append(res, Py_BuildValue("d", cur->y));
+    
+    return res;
+}
+
 PyObject* search_xy(double st_x, double st_y, double ed_x, double ed_y) {
     printf("Pos: (%.2lf, %.2lf) (%.2lf, %.2lf)\n", st_x, st_y, ed_x, ed_y);
     const Node* src = engine->getMap()->getNode(st_x, st_y);
@@ -96,9 +106,8 @@ PyObject* search_node(const Node *src, const Node *dst) {
         PyList_Append(single_sol, Py_BuildValue("d", sol.car->getPos()->y));
         
         for(auto iter = sol.car->getPassenger()->begin(); iter != sol.car->getPassenger()->end(); iter++) {
-            PyList_Append(single_sol, Py_BuildValue("i", (*iter)->id));
+            PyList_Append(pass_id, Py_BuildValue("i", (*iter)->id));
         }
-
 
         for(auto iter = sol.order.begin(); iter != sol.order.end(); iter++) {
             PyList_Append(node_id, Py_BuildValue("i", (*iter)->id));
@@ -111,6 +120,7 @@ PyObject* search_node(const Node *src, const Node *dst) {
         PyList_Append(single_sol, Py_BuildValue("d", sol.detour_dis2));
         PyList_Append(single_sol, Py_BuildValue("d", sol.value      ));
 
+        PyList_Append(single_sol, pass_id   );
         PyList_Append(single_sol, node_id   );
         PyList_Append(single_sol, node_x    );
         PyList_Append(single_sol, node_y    );

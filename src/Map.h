@@ -37,8 +37,8 @@ public:
                 res = cur;
             }
         }
-        printf("%.10lf\n", mini);
-        printf("%.10lf, %.10lf\n", res->x, res->y);
+        //printf("%.10lf\n", mini);
+        //printf("%.10lf, %.10lf\n", res->x, res->y);
         return res;
     }
 

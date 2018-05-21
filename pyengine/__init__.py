@@ -21,6 +21,8 @@ engine_search_id_ = lib.search_id
 engine_search_id_.restype = ctypes.py_object
 engine_search_xy_ = lib.search_xy
 engine_search_xy_.restype = ctypes.py_object
+engine_get_node_in_map_ = lib.get_node_in_map
+engine_get_node_in_map_.restype = ctypes.py_object
 
 # init
 def init(dir):
@@ -42,9 +44,18 @@ def search_xy(st_x, st_y, ed_x, ed_y):
     sol.parse()
     return sol
 
+def get_node_in_map(x, y):
+    PARAM = [ctypes.c_double(num) for num in [x, y]]
+    res = engine_get_node_in_map_(*PARAM)
+    return res
+
+
 def test():
     print("Test init")
     init("data")
+    print("Test get nearest point on map")
+    res = get_node_in_map(110.0, 40.5)
+    print(res)
     print("Test search id")
     sol = search_id(2333, 2334)
     print("Test search (x,y)")

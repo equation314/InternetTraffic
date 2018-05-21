@@ -24,10 +24,17 @@ set_target_properties(metis PROPERTIES IMPORTED_LOCATION_NOCONFIG "${METIS_LIBRA
 
 add_dependencies(metis build_metis)
 
-execute_process (
-    COMMAND g++ -std=c++0x -O2 ../thirdparty/GTree/src/gtree_new_p2p/GPTree.cpp -L/usr/local/lib/ -L./lib/ -I./include/ -lmetis -o gptree
-)
+include_directories(../../../../build/include/)
+link_directories(../../../../build/lib/)
+add_executable(GPTree ../thirdparty/GTree/src/gtree_new_p2p/GPTree.cpp)
+target_link_libraries(GPTree metis)
+add_library(gptree ../thirdparty/GTree/src/gtree_new_p2p/GPTree.cpp)
+target_link_libraries(gptree metis)
 
-execute_process (
-    COMMAND g++ -std=c++0x -O2 -shared -fPIC ../thirdparty/GTree/src/gtree_new_p2p/GPTree.cpp -L/usr/local/lib/ -L./lib/ -I./include/ -lmetis -o lib/libgptree.so
-)
+#execute_process (
+#    COMMAND g++ -std=c++0x -O2 ../thirdparty/GTree/src/gtree_new_p2p/GPTree.cpp -L/usr/local/lib/ -L./lib/ -I./include/ -lmetis -o gptree
+#)
+
+#execute_process (
+#    COMMAND g++ -std=c++0x -O2 -shared -fPIC ../thirdparty/GTree/src/gtree_new_p2p/GPTree.cpp -L/usr/local/lib/ -L./lib/ -I./include/ -lmetis -o lib/libgptree.so
+#)

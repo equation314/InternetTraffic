@@ -8,13 +8,13 @@ class Solution(object):
         self.car_id = result[cnt]; cnt += 1
         self.car_x  = result[cnt]; cnt += 1
         self.car_y  = result[cnt]; cnt += 1
-        self.pass_id= result[cnt]; cnt += 1
-
+        
         self.dis         = result[cnt]; cnt += 1
         self.detour_dis1 = result[cnt]; cnt += 1
         self.detour_dis2 = result[cnt]; cnt += 1
         self.value       = result[cnt]; cnt += 1
-
+        
+        self.pass_id= result[cnt]; cnt += 1
         self.node_id    = result[cnt]; cnt += 1
         self.node_x     = result[cnt]; cnt += 1
         self.node_y     = result[cnt]; cnt += 1

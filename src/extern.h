@@ -90,7 +90,7 @@ PyObject* search_node(const Node *src, const Node *dst) {
     PyObject *ret = PyList_New(0);
 
     SolutionList res = engine->query(src, dst);
-    printf("Total solution number: %d\n", res.size());
+    printf("[*] Total solution number: %d\n", res.size());
     for (auto sol : res) {
         PyObject *single_sol = PyList_New(0);
         PyObject *node_x = PyList_New(0);
@@ -105,6 +105,7 @@ PyObject* search_node(const Node *src, const Node *dst) {
         PyList_Append(single_sol, Py_BuildValue("d", sol.car->getPos()->x));
         PyList_Append(single_sol, Py_BuildValue("d", sol.car->getPos()->y));
         
+        //printf("[*] Total passenger number: %d\n", sol.car->getPassenger()->size());
         for(auto iter = sol.car->getPassenger()->begin(); iter != sol.car->getPassenger()->end(); iter++) {
             PyList_Append(pass_id, Py_BuildValue("i", (*iter)->id));
         }

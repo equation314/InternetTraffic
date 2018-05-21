@@ -8,12 +8,14 @@ Usage:
 import sys
 sys.path.insert(0, "pyengine")
 import ctypes
-from solution import Solution
+from solution import SolutionList
 
 lib = ctypes.cdll.LoadLibrary("build/src/libengine.so")   
 
-engine_search_id_ = lib.search
+engine_search_id_ = lib.search_id
 engine_search_id_.restype = ctypes.py_object
+engine_search_xy_ = lib.search_xy
+engine_search_xy_.restype = ctypes.py_object
 
 # init
 def init(dir):
@@ -24,16 +26,24 @@ def destroy():
 
 def search_id(srcID, dstID):
     res = engine_search_id_(srcID, dstID)
-    sol = Solution(res)
+    sol = SolutionList(res)
     sol.parse()
     return sol
 
+def search_xy(st_x, st_y, ed_x, ed_y):
+    PARAM = [ctypes.c_double(num) for num in [st_x, st_y, ed_x, ed_y]]
+    res = engine_search_xy_(*PARAM)
+    sol = SolutionList(res)
+    sol.parse()
+    return sol
 
 def test():
     print("Test init")
     init("data")
-    print("Test search")
+    print("Test search id")
     sol = search_id(2333, 2334)
+    print("Test search (x,y)")
+    sol = search_xy(110.0, 40.5, 110.2, 40.7)
     print("Test destory")
     destroy()
     print("Done")

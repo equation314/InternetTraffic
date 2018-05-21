@@ -1,4 +1,4 @@
-class SingleSolution(object):
+class Solution(object):
     def __init__(self, result):
         self.result = result
         self.parse(result)
@@ -28,7 +28,7 @@ class SingleSolution(object):
         print(self.node_y)
 
 
-class Solution(object):
+class SolutionList(object):
     """
     Parse from raw PyObject Result
     """
@@ -38,5 +38,5 @@ class Solution(object):
     def parse(self):
         self.result = []
         for single in self.raw_result:
-            self.result.append(SingleSolution(single))
+            self.result.append(Solution(single))
             self.result[-1].print()

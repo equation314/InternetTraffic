@@ -7,25 +7,29 @@
 #include <Python.h>
 #include "InternetTraffic.h"
 
+PyObject* search_node(const Node *src, const Node *dst);
+
 extern "C" {
 
+// test functions
+int set_argument(char *s);
 void test_python();
 
 PyObject* getList(){
-  PyObject *PList = PyList_New(0);
+    PyObject *PList = PyList_New(0);
 
-  std::vector <int> intVector;
-  std::vector<int>::const_iterator it;
+    std::vector <int> intVector;
+    std::vector<int>::const_iterator it;
 
-  for(int i = 0 ; i < 10 ; i++){
-    intVector.push_back(i);
-  }
+    for(int i = 0 ; i < 10 ; i++){
+        intVector.push_back(i);
+    }
 
-  for(it = intVector.begin(); it != intVector.end() ; it++ ){
-    PyList_Append(PList, Py_BuildValue("i", *it));
-  }
+    for(it = intVector.begin(); it != intVector.end() ; it++ ){
+        PyList_Append(PList, Py_BuildValue("i", *it));
+    }
 
-  return PList;
+    return PList;
 }
 
 InternetTraffic* engine  = NULL;
@@ -44,13 +48,39 @@ int init(const char *dir) {
     return 0;
 }
 
-PyObject* search(int srcID, int dstID) {
-    PyObject *ret = PyList_New(0);
+PyObject* search_xy(double st_x, double st_y, double ed_x, double ed_y) {
+    printf("Pos: (%.2lf, %.2lf) (%.2lf, %.2lf)\n", st_x, st_y, ed_x, ed_y);
+    const Node* src = engine->getMap()->getNode(st_x, st_y);
+    const Node* dst = engine->getMap()->getNode(ed_x, ed_y);
+    return search_node(src, dst);
+}
 
+PyObject* search_id(int srcID, int dstID) {
     const Node* src = engine->getMap()->getNode(srcID);
     const Node* dst = engine->getMap()->getNode(dstID);
-    SolutionList res = engine->query(src, dst);
+    return search_node(src, dst);
+}
 
+int destroy() {
+    if(engine == NULL) {
+        printf("[!] Not initialized!\n");
+        return -1;
+    }
+
+    delete engine;
+    engine = NULL;
+
+    return 0;
+}
+
+}
+
+
+PyObject* search_node(const Node *src, const Node *dst) {
+    PyObject *ret = PyList_New(0);
+
+    SolutionList res = engine->query(src, dst);
+    printf("Total solution number: %d\n", res.size());
     for (auto sol : res) {
         PyObject *single_sol = PyList_New(0);
         PyObject *node_x = PyList_New(0);
@@ -62,8 +92,8 @@ PyObject* search(int srcID, int dstID) {
         PyList_Append(single_sol, Py_BuildValue("i", sol.car->getId()));
 
         // add car x&y
-        PyList_Append(single_sol, Py_BuildValue("i", sol.car->getPos()->x));
-        PyList_Append(single_sol, Py_BuildValue("i", sol.car->getPos()->y));
+        PyList_Append(single_sol, Py_BuildValue("d", sol.car->getPos()->x));
+        PyList_Append(single_sol, Py_BuildValue("d", sol.car->getPos()->y));
         
         for(auto iter = sol.car->getPassenger()->begin(); iter != sol.car->getPassenger()->end(); iter++) {
             PyList_Append(single_sol, Py_BuildValue("i", (*iter)->id));
@@ -88,27 +118,6 @@ PyObject* search(int srcID, int dstID) {
         PyList_Append(ret, single_sol);
     }
     return ret;
-}
-
-int destroy() {
-    if(engine == NULL) {
-        printf("[!] Not initialized!\n");
-        return -1;
-    }
-
-    delete engine;
-    engine = NULL;
-
-    return 0;
-}
-
-// test functions
-
-int set_argument(char *s) {
-    memcpy(s, "here", 4);
-}
-
-
 }
 
 #endif

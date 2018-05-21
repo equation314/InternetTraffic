@@ -24,3 +24,7 @@ python manage.py runserver [0.0.0.0:PORT]
 ```
 
 The default port is `8000`.
+
+## Dependency
+
+`zlib` in Ubuntu.

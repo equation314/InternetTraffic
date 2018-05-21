@@ -7,6 +7,7 @@ using namespace std;
 
 Map::Map()
 {
+    tree_setup();
 }
 
 Map::~Map()
@@ -47,4 +48,18 @@ void Map::load(const string& nodeDataFile, const string& edgeDataFile)
 double Map::distance(const Node* a, const Node* b) const
 {
     return a->earthDistanceTo(b);
+}
+
+int Map::roadmap_distance(const Node* a, const Node* b) const
+{
+    return tree_search(a->id, b->id);
+}
+
+int Map::recover_roadmap_path(const Node* a, const Node* b, std::vector<const Node*> &order) const
+{
+    vector<int> ider;
+    int dist = tree_find_path(a->id, b->id, ider);
+    for(auto iter = ider.begin(); iter != ider.end(); iter++) {
+        order.push_back(m_nodes[*iter]);
+    }
 }

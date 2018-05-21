@@ -5,6 +5,11 @@
 
 #include "Node.h"
 
+/// These functions are defined in GPTree
+extern int tree_search(int S, int T);
+extern void tree_setup();
+extern int tree_find_path(int S, int T, std::vector<int> &order);
+
 struct Edge
 {
     Edge(const Node* a, const Node* b, int len) : a(a), b(b), len(len) {}
@@ -48,6 +53,10 @@ public:
     }
 
     double distance(const Node* a, const Node* b) const;
+
+    int roadmap_distance(const Node *a, const Node *b) const;
+
+    int recover_roadmap_path(const Node *a, const Node *b, std::vector<const Node*> &order) const;
 
     void load(const std::string& nodeDataFile, const std::string& edgeDataFile);
 

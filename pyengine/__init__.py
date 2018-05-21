@@ -59,10 +59,10 @@ def test(dataDir):
     res = get_node_in_map(110.0, 40.5)
     print(res)
     print("Test search id")
-    for i in range(100):
+    for i in range(30):
         sol = search_id(2333, 2334)
     print("Test search (x,y)")
-    for i in range(100):
+    for i in range(30):
         sol = search_xy(110.0, 40.5, 110.2, 40.7)
     print("Test destory")
     destroy()

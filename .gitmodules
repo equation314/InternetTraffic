@@ -4,3 +4,6 @@
 [submodule "thirdparty/metis"]
 	path = thirdparty/metis
 	url = https://github.com/AtlantixJJ/metis
+[submodule "thirdparty/RoutingKit"]
+	path = thirdparty/RoutingKit
+	url = https://github.com/RoutingKit/RoutingKit.git

@@ -12,11 +12,17 @@ var src = null,
 var srcMark = null,
   dstMark = null,
   carMarks = [],
-  otherMarks = [];
+  otherMarks = [],
+  currentCarMark = null;
 
 var carIcon = new AMap.Icon({
   size: new AMap.Size(16, 32),
   image: "static/img/car.png",
+  imageSize: new AMap.Size(16, 32)
+});
+var carActivedIcon = new AMap.Icon({
+  size: new AMap.Size(16, 32),
+  image: "static/img/car_actived.png",
   imageSize: new AMap.Size(16, 32)
 });
 
@@ -54,16 +60,6 @@ function newMark(position, icon, label) {
   });
 }
 
-function showCurrentPassenger(src, dst) {
-  if (!srcMark) srcMark = newMark(src, 2, "起");
-  srcMark.setPosition(src);
-  srcMark.show();
-
-  if (!dstMark) dstMark = newMark(dst, 0, "终");
-  dstMark.setPosition(dst);
-  dstMark.show();
-}
-
 function showCars(cars) {
   clearMarks();
 
@@ -79,12 +75,15 @@ function showCars(cars) {
       carMarks[i] = newMark(car.location, carIcon);
       carMarks[i].setOffset(new AMap.Pixel(-8, -16));
       carMarks[i].setzIndex(99);
-      carMarks[i].setAngle(car.angle);
 
       AMap.event.addListener(carMarks[i], "click", event => {
-        showCarPath(cars[i]);
+        if (currentCarMark) currentCarMark.setIcon(carIcon);
+        currentCarMark = carMarks[i];
+        carMarks[i].setIcon(carActivedIcon);
+        showCarPath(i);
       });
     }
+    carMarks[i].setAngle(car.angle);
     carMarks[i].setPosition(car.location);
     carMarks[i].show();
   });
@@ -101,9 +100,10 @@ function showPassengers(pass) {
   });
 }
 
-function showCarPath(car) {
+function showCarPath(index) {
   if (!pathSimplifierIns) return;
 
+  let car = cars[index];
   showPassengers(car.passengers);
 
   pathSimplifierIns.setData([
@@ -121,21 +121,62 @@ function showCarPath(car) {
 }
 
 function clearMarks(clearSrcDst = false) {
+  if (currentCarMark) {
+    currentCarMark.setIcon(carIcon);
+    currentCarMark = null;
+  }
   pathSimplifierIns && pathSimplifierIns.setData(null);
   otherMarks.forEach(mark => mark.hide());
   carMarks.forEach(mark => mark.hide());
   if (clearSrcDst) {
+    src = dst = null;
     srcMark && srcMark.hide();
     dstMark && dstMark.hide();
+    $("#btn-action").text("选择起点");
+    $("#btn-action").prop("disabled", false);
   }
 }
 
 function onClickActionButton() {
-  getSolution(src.id, dst.id, data => {
-    cars = data.cars;
-    showCars(cars);
-    map.setFitView();
-  });
+  if (!src) {
+    $("#btn-action").prop("disabled", true);
+  } else if (!dst) {
+    $("#btn-action").prop("disabled", true);
+  } else {
+    getSolution(src.id, dst.id, data => {
+      cars = data.cars;
+      if (!cars.length) {
+        alert("没有合适的出租车！");
+        return;
+      }
+      showCars(cars);
+      map.setFitView();
+      $("#btn-action").prop("disabled", true);
+    });
+  }
+}
+
+function onClickMap(position) {
+  if (!$("#btn-action").prop("disabled")) return;
+  if (!src) {
+    getNearestNode(position, data => {
+      src = data;
+      if (!srcMark) srcMark = newMark(src.location, 2, "起");
+      srcMark.setPosition(src.location);
+      srcMark.show();
+      $("#btn-action").prop("disabled", false);
+      $("#btn-action").text("选择终点");
+    });
+  } else if (!dst) {
+    getNearestNode(position, data => {
+      dst = data;
+      if (!dstMark) dstMark = newMark(dst.location, 0, "终");
+      dstMark.setPosition(dst.location);
+      dstMark.show();
+      $("#btn-action").prop("disabled", false);
+      $("#btn-action").text("查询");
+    });
+  }
 }
 
 function initMap() {
@@ -151,22 +192,19 @@ function initMap() {
       map.addControl(new AMap.Scale());
     });
   });
+  map.on("click", function(e) {
+    onClickMap([e.lnglat.getLng(), e.lnglat.getLat()]);
+  });
 
   AMap.event.addListener(map, "zoomend", function() {
     if (navi) navi.setSpeed(getCarSpeed(map.getZoom()));
   });
-  AMap.event.addDomListener(
-    document.getElementById("action"),
-    "click",
-    onClickActionButton,
-    false
-  );
-  AMap.event.addDomListener(
-    document.getElementById("clear"),
-    "click",
-    () => clearMarks(),
-    false
-  );
+  document
+    .getElementById("btn-action")
+    .addEventListener("click", onClickActionButton, false);
+  document
+    .getElementById("btn-clear")
+    .addEventListener("click", () => clearMarks(true), false);
 }
 
 function initPathSimplifier(PathSimplifier) {
@@ -180,6 +218,7 @@ function initPathSimplifier(PathSimplifier) {
       return null;
     },
     clickToSelectPath: false,
+    autoSetFitView: false,
     renderOptions: {
       pathLineStyle: {
         strokeStyle: "#22aa99",
@@ -193,10 +232,10 @@ function initPathSimplifier(PathSimplifier) {
         strokeStyle: null,
         fillStyle: null,
         pathLinePassedStyle: {
-          strokeStyle: "#ff6600"
+          strokeStyle: "#ffaa00"
         },
         content: PathSimplifier.Render.Canvas.getImageContent(
-          "static/img/car.png",
+          "static/img/car_actived.png",
           function onload() {
             pathSimplifierIns.renderLater();
           }
@@ -234,14 +273,5 @@ $(document).ready(() => {
 
   AMapUI.load(["ui/misc/PathSimplifier"], function(PathSimplifier) {
     initPathSimplifier(PathSimplifier);
-  });
-
-  getNearestNode([117.08276, 39.95343], data => {
-    src = data;
-    getNearestNode([117.08538, 39.95314], data => {
-      dst = data;
-      showCurrentPassenger(src.location, dst.location);
-      map.setFitView();
-    });
   });
 });

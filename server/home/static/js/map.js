@@ -157,6 +157,29 @@ function showPath() {
   navi.start();
 }
 
+function getNearestNode(position, callback) {
+  $.get(
+    "nearestnode",
+    {
+      location: position.join(",")
+    },
+    callback,
+    "json"
+  );
+}
+
+function getSolution(srcId, dstId, callback) {
+  $.get(
+    "query",
+    {
+      srcId: srcId,
+      dstId: dstId
+    },
+    callback,
+    "json"
+  );
+}
+
 $(document).ready(() => {
   AMapUI.load(["ui/misc/PathSimplifier"], function(ps) {
     PathSimplifier = ps;
@@ -172,4 +195,11 @@ $(document).ready(() => {
   showCurrentPassenger(src, dst);
 
   map.setFitView();
+
+  getNearestNode(src, data => {
+    console.log(data);
+  });
+  getSolution(2334, 2334, data => {
+    console.log(data);
+  });
 });

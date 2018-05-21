@@ -1,3 +1,6 @@
 [submodule "thirdparty/GTree"]
 	path = thirdparty/GTree
 	url = https://github.com/TsinghuaDatabaseGroup/GTree
+[submodule "thirdparty/metis"]
+	path = thirdparty/metis
+	url = https://github.com/AtlantixJJ/metis

@@ -3,28 +3,22 @@ var infoWindow,
   navi,
   zooms = [8, 19],
   center = { lng: 116.442263, lat: 39.835354 },
-  PathSimplifier;
+  pathSimplifierIns;
 
-src = [117.08276, 39.95343];
-dst = [117.08538, 39.95314];
-cars = [
-  [117.08422, 39.95326],
-  [117.08195, 39.95647],
-  [117.08195, 39.95647],
-  [117.08499, 39.95949],
-  [117.08364, 39.94695]
-];
-otherPassengers = [
-  [117.08538, 39.95314],
-  [117.01075, 40.03353],
-  [116.96512, 39.99651],
-  [116.82978, 39.94889]
-];
-path = [cars[2], src].concat(otherPassengers);
+var src = null,
+  dst = null,
+  cars = [];
 
-carMarks = [];
-passengerMasks = [];
-otherMarks = [];
+var srcMark = null,
+  dstMark = null,
+  carMarks = [],
+  otherMarks = [];
+
+var carIcon = new AMap.Icon({
+  size: new AMap.Size(16, 32),
+  image: "static/img/car.png",
+  imageSize: new AMap.Size(16, 32)
+});
 
 function getCarSpeed(zoom) {
   return 10000 / Math.pow(2, (zoom - 8) / 1.5);
@@ -39,14 +33,14 @@ function markIcon(color) {
   });
 }
 
-function newMark(position, color, label) {
+function newMark(position, icon, label) {
   return new AMap.Marker({
     map: map,
     position: position,
     topWhenClick: true,
     clickable: true,
     offset: new AMap.Pixel(-12, -27),
-    icon: color !== undefined ? markIcon(color) : null,
+    icon: typeof icon == "number" ? markIcon(icon) : icon,
     label:
       label !== undefined
         ? {
@@ -57,33 +51,57 @@ function newMark(position, color, label) {
 }
 
 function showCurrentPassenger(src, dst) {
-  srcMark = newMark(src, 2, "起");
-  dstMark = newMark(dst, 0, "终");
-  passengerMasks = [srcMark, dstMark];
+  if (!srcMark) srcMark = newMark(src, 2, "起");
+  else srcMark.setPosition(src);
+
+  if (!dstMark) dstMark = newMark(dst, 0, "终");
+  else dstMark.setPosition(src);
 }
 
 function showCars(cars) {
-  carMarks = [];
-  cars.forEach((position, i) => {
-    mark = newMark(position);
-    mark.setOffset(new AMap.Pixel(-8, -16));
-    mark.setIcon(
-      new AMap.Icon({
-        size: new AMap.Size(16, 32),
-        image: "static/img/car.png",
-        imageSize: new AMap.Size(16, 32)
-      })
-    );
-    carMarks.push(mark);
+  carMarks.forEach(mark => (mark.map = null));
+  cars.forEach((car, i) => {
+    if (!carMarks[i]) {
+      carMarks[i] = newMark(car.location, carIcon);
+      carMarks[i].setOffset(new AMap.Pixel(-8, -16));
+      carMarks[i].setzIndex(99);
+      carMarks[i].setAngle(car.angle);
+    }
+    carMarks[i].setPosition(car.location);
+    carMarks[i].map = map;
   });
 }
 
 function showPassengers(pass) {
-  otherMarks = [];
+  otherMarks.forEach(mark => (mark.map = null));
   pass.forEach((position, i) => {
-    mark = newMark(position, 3, "客");
-    otherMarks.push(mark);
+    if (!otherMarks[i]) {
+      otherMarks[i] = newMark(position, 3, "客");
+    }
+    otherMarks[i].setPosition(position);
+    otherMarks[i].map = map;
   });
+}
+
+function showCarPath(car) {
+  if (!pathSimplifierIns) return;
+
+  showPassengers(car.passengers);
+
+  pathSimplifierIns.setData([
+    {
+      path: car.path
+    }
+  ]);
+
+  if (!navi) {
+    navi = pathSimplifierIns.createPathNavigator(0, {
+      loop: true,
+      speed: getCarSpeed(map.getZoom())
+    });
+  }
+
+  navi.start();
 }
 
 function initMap() {
@@ -105,10 +123,8 @@ function initMap() {
   });
 }
 
-function showPath() {
-  if (!PathSimplifier) return;
-
-  var pathSimplifierIns = new PathSimplifier({
+function initPathSimplifier(PathSimplifier) {
+  pathSimplifierIns = new PathSimplifier({
     zIndex: 100,
     map: map,
     getPath: function(pathData, pathIndex) {
@@ -131,7 +147,7 @@ function showPath() {
         strokeStyle: null,
         fillStyle: null,
         pathLinePassedStyle: {
-          strokeStyle: "#cc3f58"
+          strokeStyle: "#ff6600"
         },
         content: PathSimplifier.Render.Canvas.getImageContent(
           "static/img/car.png",
@@ -142,19 +158,6 @@ function showPath() {
       }
     }
   });
-
-  pathSimplifierIns.setData([
-    {
-      path: path
-    }
-  ]);
-
-  navi = pathSimplifierIns.createPathNavigator(0, {
-    loop: true,
-    speed: getCarSpeed(map.getZoom())
-  });
-
-  navi.start();
 }
 
 function getNearestNode(position, callback) {
@@ -181,25 +184,23 @@ function getSolution(srcId, dstId, callback) {
 }
 
 $(document).ready(() => {
-  AMapUI.load(["ui/misc/PathSimplifier"], function(ps) {
-    PathSimplifier = ps;
-    showPath();
-  });
-
   initMap();
 
-  showCars(cars);
+  AMapUI.load(["ui/misc/PathSimplifier"], function(PathSimplifier) {
+    initPathSimplifier(PathSimplifier);
 
-  showPassengers(otherPassengers);
-
-  showCurrentPassenger(src, dst);
-
-  map.setFitView();
-
-  getNearestNode(src, data => {
-    console.log(data);
-  });
-  getSolution(2333, 2334, data => {
-    console.log(data);
+    getNearestNode([117.08276, 39.95343], data => {
+      src = data;
+      getNearestNode([117.08538, 39.95314], data => {
+        dst = data;
+        showCurrentPassenger(src.location, dst.location);
+        getSolution(src.id, dst.id, data => {
+          cars = data.cars;
+          showCars(cars);
+          map.setFitView();
+          showCarPath(cars[0]);
+        });
+      });
+    });
   });
 });

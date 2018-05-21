@@ -90,17 +90,19 @@ Solution Car::query(const Node* src, const Node* dst, const Map* map) const
 
     double d4 = map->distance(src, dst);
 
-    NodeList order = m_passengers;
-    double d1 = getMinDistance(order, m_pos, map);
+    NodeList path = m_passengers;
+    double d1 = getMinDistance(path, m_pos, map);
 
-    order.push_back(dst);
-    double d3 = getMinDistance(order, src, map);
+    path.push_back(dst);
+    double d3 = getMinDistance(path, src, map);
+    path.insert(path.begin(), src);
+    path.insert(path.begin(), m_pos);
 
     double detour_dis1 = d2 + d3 - d1;
     double detour_dis2 = -d4;
 
     // current passenge is arrived
-    for (auto node : order)
+    for (auto node : path)
     {
         detour_dis2 += map->distance(src, node);
         src = node;
@@ -116,5 +118,5 @@ Solution Car::query(const Node* src, const Node* dst, const Map* map) const
     if (detour_dis1 > 10 || detour_dis2 > 10)
         return Solution();
 
-    return Solution(this, order, d2, detour_dis1, detour_dis2);
+    return Solution(this, path, d2, detour_dis1, detour_dis2);
 }

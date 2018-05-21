@@ -5,10 +5,7 @@
 
 using namespace std;
 
-Map::Map()
-{
-    tree_setup();
-}
+Map::Map() {}
 
 Map::~Map()
 {
@@ -43,6 +40,8 @@ void Map::load(const string& nodeDataFile, const string& edgeDataFile)
         m_edges.push_back(new Edge(getNode(a), getNode(b), len));
 
     fclose(f);
+
+    tree_setup();
 }
 
 double Map::distance(const Node* a, const Node* b) const
@@ -50,16 +49,18 @@ double Map::distance(const Node* a, const Node* b) const
     return a->earthDistanceTo(b);
 }
 
-int Map::roadmap_distance(const Node* a, const Node* b) const
+double Map::roadmap_distance(const Node* a, const Node* b) const
 {
-    return tree_search(a->id, b->id);
+    return tree_search(a->id, b->id) / 1000.0;
 }
 
-int Map::recover_roadmap_path(const Node* a, const Node* b, std::vector<const Node*> &order) const
+int Map::recover_roadmap_path(const Node* a, const Node* b,
+                              std::vector<const Node*>& order) const
 {
     vector<int> ider;
     int dist = tree_find_path(a->id, b->id, ider);
-    for(auto iter = ider.begin(); iter != ider.end(); iter++) {
+    for (auto iter = ider.begin(); iter != ider.end(); iter++)
+    {
         order.push_back(m_nodes[*iter]);
     }
 }

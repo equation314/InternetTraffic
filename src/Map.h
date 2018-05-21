@@ -54,7 +54,7 @@ public:
 
     double distance(const Node* a, const Node* b) const;
 
-    int roadmap_distance(const Node *a, const Node *b) const;
+    double roadmap_distance(const Node *a, const Node *b) const;
 
     int recover_roadmap_path(const Node *a, const Node *b, std::vector<const Node*> &order) const;
 

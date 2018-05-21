@@ -18,6 +18,7 @@ struct Solution
 
     const Car* car;
     NodeList path;
+    std::vector<int> order;
 
     double dis;         // distance between the car and current passenger
     double detour_dis1; // detour distance of passengers alreay on the car

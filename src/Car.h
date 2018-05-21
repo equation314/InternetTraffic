@@ -15,8 +15,8 @@ public:
     int getId() const { return m_id; }
 
     const Node* getPos() const { return m_pos; }
-    
-    const NodeList* getPassenger() const {return &m_passengers;}
+
+    const NodeList* getPassenger() const { return &m_passengers; }
 
     void print() const;
 
@@ -27,11 +27,11 @@ private:
     const Node* m_pos;
     NodeList m_passengers;
 
-    static double getDistanceByOrder(const NodeList& list, const Node* src,
-                                     const Map* map);
+    static double getMinDistance(std::vector<int>& dstIds, int srcId,
+                                 const double disMatrix[6][6]);
 
-    static double getMinDistance(NodeList& list, const Node* src,
-                                 const Map* map);
+    bool earthDistanceCheck(const Node* src, const Node* dst,
+                            const Map* map) const;
 };
 
 typedef std::vector<const Car*> CarList;

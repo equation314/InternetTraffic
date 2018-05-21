@@ -1,11 +1,6 @@
 #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 set(BUILD_PROGRAM make)
-add_custom_target(build_routingkit ALL
-        COMMAND ${BUILD_PROGRAM}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/RoutingKit/
-        COMMENT "Original metis makefile target")
-add_library(rk STATIC IMPORTED)
-add_dependencies(rk build_routingkit)
+# add_dependencies(rk build_routingkit)
 
 #set(CMAKE_C_COMPILER /usr/local/bin/mpicc)
 #set(CMAKE_CXX_COMPILER /usr/local/bin/mpicxx)
@@ -26,19 +21,19 @@ add_dependencies(rk build_routingkit)
 #add_dependencies(metis config_metis)
 #add_dependencies(metis build_metis)
 
-#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../build/include/)
-#link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../build/lib/)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../build/include/)
+link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../build/lib/)
 #
 #add_executable(GPTree ${CMAKE_CURRENT_SOURCE_DIR}/GTree/src/gtree_new_p2p/GPTree.cpp)
 #target_link_libraries(GPTree metis)
 #
-#add_library(gptree ${CMAKE_CURRENT_SOURCE_DIR}/GTree/src/gtree_new_p2p/GPTree.cpp)
-#target_link_libraries(gptree metis)
+add_library(gptree ${CMAKE_CURRENT_SOURCE_DIR}/lib/GPTree.cpp)
+target_link_libraries(gptree metis)
 
 # Build METIS lib
-#execute_process (COMMAND bash -c "cd ../thirdparty/metis && make config prefix=../../../../build/ && make install")
+# execute_process (COMMAND bash -c "cd ../thirdparty/metis && make config prefix=../../../../build/ && make install")
 #execute_process (COMMAND g++ -std=c++0x -O2 ../thirdparty/GTree/src/gtree_new_p2p/GPTree.cpp -L/usr/local/lib/ -L./lib/ -I./include/ -lmetis -o GPTree)
-execute_process (COMMAND g++ -std=c++0x -O2 -shared -fPIC ../thirdparty/lib/GPTree.cpp -L/usr/local/lib/ -L./lib/ -I./include/ -lmetis -o lib/libgptree.so)
+#execute_process (COMMAND g++ -std=c++0x -O2 -shared -fPIC ../thirdparty/lib/GPTree.cpp -L/usr/local/lib/ -L./lib/ -I./include/ -lmetis -o lib/libgptree.so)
 
 #execute_process (COMMAND g++ -std=c++0x -O2 ../thirdparty/lib/GPTree.cpp -L/usr/local/lib/ -L./lib/ -I./include/ -lmetis -c -o libgptree.o)
 #execute_process (COMMAND ar -cr lib/libgptree.a libgptree.o lib/libmetis.a)

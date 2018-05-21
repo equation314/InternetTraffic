@@ -10,9 +10,7 @@ const char CAR_DATA[] = "car.txt";
 const char NODE_DATA[] = "road.cnode";
 const char EDGE_DATA[] = "road.nedge";
 
-InternetTraffic::InternetTraffic() : m_map(new Map())
-{
-}
+InternetTraffic::InternetTraffic() : m_map(new Map()) {}
 
 InternetTraffic::~InternetTraffic()
 {
@@ -71,7 +69,7 @@ SolutionList InternetTraffic::query(double st_x, double st_y, double ed_x, doubl
 }
 */
 
-SolutionList InternetTraffic::query(const Node* src, const Node* dst)
+SoutionList InternetTraffic::query(const Node* src, const Node* dst)
 {
     printf("Current passenger's route: %s -> %s\n", src->toString().c_str(),
            dst->toString().c_str());
@@ -82,7 +80,10 @@ SolutionList InternetTraffic::query(const Node* src, const Node* dst)
         Solution sol = car->query(src, dst, m_map);
         if (sol.isOk())
             all.push_back(sol);
+        if (all.size() >= 100)
+            break;
     }
+    printf("%d\n", all.size());
     sort(all.begin(), all.end());
 
     for (int i = 0; i < 5 && i < all.size(); i++)

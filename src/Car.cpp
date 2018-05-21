@@ -24,9 +24,7 @@ Car::Car(int id, const Node* pos, const NodeList& passengers)
 {
 }
 
-Car::~Car()
-{
-}
+Car::~Car() {}
 
 void Car::print() const
 {
@@ -38,36 +36,29 @@ void Car::print() const
     printf("]\n");
 }
 
-double Car::getDistanceByOrder(const NodeList& list, const Node* src,
-                               const Map* map)
+double Car::getMinDistance(vector<int>& dstIds, int srcId,
+                           const double disMatrix[6][6])
 {
-    double d = 0;
-    const Node* pred = src;
-    for (auto node : list)
-    {
-        d += map->distance(pred, node);
-        pred = node;
-    }
-    return d;
-}
-
-double Car::getMinDistance(NodeList& list, const Node* src, const Map* map)
-{
-    int n = list.size();
+    int n = dstIds.size();
     double res = Const::INF;
-    NodeList resList = list;
-    vector<int> a;
+    vector<int> resList = dstIds;
 
     if (!n)
         return 0;
 
     for (int i = 0; i < FACTORIAL[n]; i++)
     {
-        NodeList temp = list;
-        for (int j = 0; j < n; j++)
-            temp[j] = list[PERMUTATIONS[n][i][j]];
-        double d = getDistanceByOrder(temp, src, map);
-
+        vector<int> temp;
+        double d = 0;
+        for (int j = 0, pred = srcId; j < n; j++)
+        {
+            int now = dstIds[PERMUTATIONS[n][i][j]];
+            d += disMatrix[pred][now];
+            if (d >= res)
+                break;
+            temp.push_back(now);
+            pred = now;
+        }
         if (d < res)
         {
             res = d;
@@ -75,38 +66,66 @@ double Car::getMinDistance(NodeList& list, const Node* src, const Map* map)
         }
     }
 
-    list = resList;
+    dstIds = resList;
     return res;
+}
+
+bool Car::earthDistanceCheck(const Node* src, const Node* dst,
+                             const Map* map) const
+{
+    if (m_passenger_count >= 4)
+        return false;
+
+    double d2 = map->distance(m_pos, src);
+    return d2 <= 10;
 }
 
 Solution Car::query(const Node* src, const Node* dst, const Map* map) const
 {
-    if (m_passenger_count >= 4)
+    if (!earthDistanceCheck(src, dst, map))
         return Solution();
 
-    double d2 = map->distance(m_pos, src);
-    if (d2 > 10)
-        return Solution();
+    NodeList nodes = {m_pos, src, dst};
+    for (auto node : m_passengers)
+        nodes.push_back(node);
 
-    double d4 = map->distance(src, dst);
+    double disMatrix[6][6];
+    memset(disMatrix, 0, sizeof(disMatrix));
+    for (int i = 0; i < nodes.size(); i++)
+        for (int j = 0; j < i; j++)
+        {
+            disMatrix[i][j] = disMatrix[j][i] =
+                map->roadmap_distance(nodes[i], nodes[j]);
+            if (disMatrix[0][1] > 10)
+                return Solution();
+        }
 
-    NodeList path = m_passengers;
-    double d1 = getMinDistance(path, m_pos, map);
+    double d2 = disMatrix[0][1];
+    double d4 = disMatrix[1][2];
 
-    path.push_back(dst);
-    double d3 = getMinDistance(path, src, map);
-    path.insert(path.begin(), src);
-    path.insert(path.begin(), m_pos);
+    /* car: 0
+     * src: 1
+     * dst: 2
+     */
+    vector<int> dstIds;
+    for (int i = 0; i < m_passengers.size(); i++)
+        dstIds.push_back(i + 3);
+
+    double d1 = getMinDistance(dstIds, 0, disMatrix);
+
+    dstIds.push_back(2);
+    double d3 = getMinDistance(dstIds, 1, disMatrix);
 
     double detour_dis1 = d2 + d3 - d1;
     double detour_dis2 = -d4;
 
     // current passenge is arrived
-    for (auto node : path)
+    int srcId = 1;
+    for (auto i : dstIds)
     {
-        detour_dis2 += map->distance(src, node);
-        src = node;
-        if (node->id == dst->id)
+        detour_dis2 += disMatrix[i][srcId];
+        srcId = i;
+        if (i == 2)
             break;
     }
 
@@ -117,6 +136,15 @@ Solution Car::query(const Node* src, const Node* dst, const Map* map) const
 
     if (detour_dis1 > 10 || detour_dis2 > 10)
         return Solution();
+
+    NodeList path = {m_pos, src};
+    for (auto i : dstIds)
+    {
+        if (i == 2)
+            path.push_back(dst);
+        else
+            path.push_back(m_passengers[i - 3]);
+    }
 
     return Solution(this, path, d2, detour_dis1, detour_dis2);
 }

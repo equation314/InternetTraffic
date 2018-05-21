@@ -5,17 +5,20 @@ Usage:
 2. call search_id(srcID, dstID) to get the solution. The return type is defined in `solution.py`.
 3. call destroy() if all the query are finished.
 """
-import sys, platform
-sys.path.insert(0, "pyengine")
+import sys
+import os
+import platform
 import ctypes
-from solution import SolutionList
+from pyengine.solution import SolutionList
 
 EXT_NAME = {
     'Darwin': 'dylib',
     'Linux': 'so',
     'Windows': 'dll',
 }
-lib = ctypes.cdll.LoadLibrary("build/src/libengine.%s" % EXT_NAME[platform.system()])
+ROOT_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..')
+lib = ctypes.cdll.LoadLibrary(
+    os.path.join(ROOT_PATH, 'build', 'src', 'libengine.%s' % EXT_NAME[platform.system()]))
 
 engine_search_id_ = lib.search_id
 engine_search_id_.restype = ctypes.py_object
@@ -50,9 +53,9 @@ def get_node_in_map(x, y):
     return res
 
 
-def test():
+def test(dataDir):
     print("Test init")
-    init("data")
+    init(dataDir)
     print("Test get nearest point on map")
     res = get_node_in_map(110.0, 40.5)
     print(res)

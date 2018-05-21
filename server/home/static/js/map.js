@@ -59,27 +59,31 @@ function showCurrentPassenger(src, dst) {
 }
 
 function showCars(cars) {
-  carMarks.forEach(mark => (mark.map = null));
+  carMarks.forEach(mark => mark.hide());
   cars.forEach((car, i) => {
     if (!carMarks[i]) {
       carMarks[i] = newMark(car.location, carIcon);
       carMarks[i].setOffset(new AMap.Pixel(-8, -16));
       carMarks[i].setzIndex(99);
       carMarks[i].setAngle(car.angle);
+
+      AMap.event.addListener(carMarks[i], "click", event => {
+        showCarPath(cars[i]);
+      });
     }
     carMarks[i].setPosition(car.location);
-    carMarks[i].map = map;
+    carMarks[i].show();
   });
 }
 
 function showPassengers(pass) {
-  otherMarks.forEach(mark => (mark.map = null));
+  otherMarks.forEach(mark => mark.hide());
   pass.forEach((position, i) => {
     if (!otherMarks[i]) {
       otherMarks[i] = newMark(position, 3, "客");
     }
     otherMarks[i].setPosition(position);
-    otherMarks[i].map = map;
+    otherMarks[i].show();
   });
 }
 
@@ -94,12 +98,10 @@ function showCarPath(car) {
     }
   ]);
 
-  if (!navi) {
-    navi = pathSimplifierIns.createPathNavigator(0, {
-      loop: true,
-      speed: getCarSpeed(map.getZoom())
-    });
-  }
+  navi = pathSimplifierIns.createPathNavigator(0, {
+    loop: true,
+    speed: getCarSpeed(map.getZoom())
+  });
 
   navi.start();
 }
@@ -198,7 +200,6 @@ $(document).ready(() => {
           cars = data.cars;
           showCars(cars);
           map.setFitView();
-          showCarPath(cars[0]);
         });
       });
     });

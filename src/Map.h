@@ -21,6 +21,23 @@ public:
     Map();
     virtual ~Map();
 
+    /// Get the nearest node by (x, y)
+    const Node* getNode(double x, double y) const {
+        int i;
+        double mini = 0xffffff, dist= 0xffffff;
+        const Node *res = NULL, *cur = NULL;
+        for(i = 0; i < m_nodes.size(); i++) {
+            cur = m_nodes[i];
+            dist = (x - cur->x) * (x - cur->x) + (y - cur->y) * (y - cur->y);
+            //dist = (x - cur.x) * (x - cur.x) + (y - cur.y) * (y - cury);
+            if(mini > dist) {
+                mini = dist;
+                res = cur;
+            }
+        }
+        return res;
+    }
+
     const Node* getNode(size_t id) const
     {
         return id >= m_node_count ? nullptr : m_nodes[id];

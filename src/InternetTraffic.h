@@ -17,8 +17,12 @@ public:
 
     void startup(const std::string& dataDir);
 
+    // Query by (x, y)
+    // SolutionList query(double st_x, double st_y, double ed_x, double ed_y);
+    // Query by node
     SolutionList query(const Node* src, const Node* dst);
 
+private:
 private:
     Map* m_map;
     CarList m_cars;

@@ -14,11 +14,11 @@ def nearestNode(request):
     if request.method == 'GET' and 'location' in form_data:
         try:
             lon, lat = map(float, form_data['location'].split(','))
-            id, location = api.getNearestNode(lon, lat)
+            id, lon, lat = api.getNearestNode(lon, lat)
 
             return HttpResponse(json.dumps({
                 'succes': True,
-                'location': location,
+                'location': [lon, lat],
                 'id': id
             }))
         except Exception as e:

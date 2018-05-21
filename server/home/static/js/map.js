@@ -12,11 +12,17 @@ var src = null,
 var srcMark = null,
   dstMark = null,
   carMarks = [],
-  otherMarks = [];
+  otherMarks = [],
+  currentCarMark = null;
 
 var carIcon = new AMap.Icon({
   size: new AMap.Size(16, 32),
   image: "static/img/car.png",
+  imageSize: new AMap.Size(16, 32)
+});
+var carActivedIcon = new AMap.Icon({
+  size: new AMap.Size(16, 32),
+  image: "static/img/car_actived.png",
   imageSize: new AMap.Size(16, 32)
 });
 
@@ -71,6 +77,9 @@ function showCars(cars) {
       carMarks[i].setzIndex(99);
 
       AMap.event.addListener(carMarks[i], "click", event => {
+        if (currentCarMark) currentCarMark.setIcon(carIcon);
+        currentCarMark = carMarks[i];
+        carMarks[i].setIcon(carActivedIcon);
         showCarPath(i);
       });
     }
@@ -112,6 +121,10 @@ function showCarPath(index) {
 }
 
 function clearMarks(clearSrcDst = false) {
+  if (currentCarMark) {
+    currentCarMark.setIcon(carIcon);
+    currentCarMark = null;
+  }
   pathSimplifierIns && pathSimplifierIns.setData(null);
   otherMarks.forEach(mark => mark.hide());
   carMarks.forEach(mark => mark.hide());
@@ -219,10 +232,10 @@ function initPathSimplifier(PathSimplifier) {
         strokeStyle: null,
         fillStyle: null,
         pathLinePassedStyle: {
-          strokeStyle: "#ff6600"
+          strokeStyle: "#ffaa00"
         },
         content: PathSimplifier.Render.Canvas.getImageContent(
-          "static/img/car.png",
+          "static/img/car_actived.png",
           function onload() {
             pathSimplifierIns.renderLater();
           }

@@ -31,13 +31,13 @@ def query(request):
     form_data = request.GET
     if request.method == 'GET' and 'srcId' in form_data and 'dstId' in form_data:
         try:
-            srcId = form_data['srcId']
-            dstId = form_data['dstId']
-            solutions = api.query(srcId, dstId)
+            srcId = int(form_data['srcId'])
+            dstId = int(form_data['dstId'])
+            cars = api.query(srcId, dstId)
 
             return HttpResponse(json.dumps({
                 'succes': True,
-                'cars': solutions,
+                'cars': cars,
             }))
         except Exception as e:
             print(e)

@@ -11,5 +11,17 @@ def getNearestNode(lon, lat):
 
 
 def query(srcId, dstId):
-    sols = pyengine.search_id(2333, 2334)
-    print(sols)
+    cars = []
+    sols = pyengine.search_id(srcId, dstId)
+    for sol in sols.result:
+        car = {
+            "location": [sol.car_x, sol.car_y],
+            "passengers": list(zip(sol.pass_x, sol.pass_y)),
+            "path": list(zip(sol.node_x, sol.node_y)),
+            "dis": sol.dis,
+            "detour_dis1": sol.detour_dis1,
+            "detour_dis2": sol.detour_dis2,
+        }
+        cars.append(car)
+
+    return cars

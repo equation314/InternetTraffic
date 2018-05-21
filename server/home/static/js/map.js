@@ -24,6 +24,10 @@ function getCarSpeed(zoom) {
   return 10000 / Math.pow(2, (zoom - 8) / 1.5);
 }
 
+function isSameNode(a, b) {
+  return a.location[0] === b.location[0] && a.location[1] === b.location[1];
+}
+
 function markIcon(color) {
   return new AMap.Icon({
     size: new AMap.Size(24, 28),
@@ -60,6 +64,13 @@ function showCurrentPassenger(src, dst) {
 
 function showCars(cars) {
   carMarks.forEach(mark => mark.hide());
+  cars.forEach((car, i) => {
+    for (let j = 0; j < i; j++)
+      if (isSameNode(cars[j], car)) {
+        cars[i].location[0] += (Math.random() - 0.5) / 5000;
+        cars[i].location[1] += (Math.random() - 0.5) / 5000;
+      }
+  });
   cars.forEach((car, i) => {
     if (!carMarks[i]) {
       carMarks[i] = newMark(car.location, carIcon);

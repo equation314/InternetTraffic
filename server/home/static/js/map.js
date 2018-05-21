@@ -56,14 +56,17 @@ function newMark(position, icon, label) {
 
 function showCurrentPassenger(src, dst) {
   if (!srcMark) srcMark = newMark(src, 2, "起");
-  else srcMark.setPosition(src);
+  srcMark.setPosition(src);
+  srcMark.show();
 
   if (!dstMark) dstMark = newMark(dst, 0, "终");
-  else dstMark.setPosition(src);
+  dstMark.setPosition(dst);
+  dstMark.show();
 }
 
 function showCars(cars) {
-  carMarks.forEach(mark => mark.hide());
+  clearMarks();
+
   cars.forEach((car, i) => {
     for (let j = 0; j < i; j++)
       if (isSameNode(cars[j], car)) {
@@ -117,8 +120,26 @@ function showCarPath(car) {
   navi.start();
 }
 
+function clearMarks(clearSrcDst = false) {
+  pathSimplifierIns && pathSimplifierIns.setData(null);
+  otherMarks.forEach(mark => mark.hide());
+  carMarks.forEach(mark => mark.hide());
+  if (clearSrcDst) {
+    srcMark && srcMark.hide();
+    dstMark && dstMark.hide();
+  }
+}
+
+function onClickActionButton() {
+  getSolution(src.id, dst.id, data => {
+    cars = data.cars;
+    showCars(cars);
+    map.setFitView();
+  });
+}
+
 function initMap() {
-  map = new AMap.Map("mapContainer", {
+  map = new AMap.Map("container", {
     center: new AMap.LngLat(center.lng, center.lat),
     resizeEnable: true,
     zooms: zooms
@@ -134,6 +155,18 @@ function initMap() {
   AMap.event.addListener(map, "zoomend", function() {
     if (navi) navi.setSpeed(getCarSpeed(map.getZoom()));
   });
+  AMap.event.addDomListener(
+    document.getElementById("action"),
+    "click",
+    onClickActionButton,
+    false
+  );
+  AMap.event.addDomListener(
+    document.getElementById("clear"),
+    "click",
+    () => clearMarks(),
+    false
+  );
 }
 
 function initPathSimplifier(PathSimplifier) {
@@ -201,18 +234,14 @@ $(document).ready(() => {
 
   AMapUI.load(["ui/misc/PathSimplifier"], function(PathSimplifier) {
     initPathSimplifier(PathSimplifier);
+  });
 
-    getNearestNode([117.08276, 39.95343], data => {
-      src = data;
-      getNearestNode([117.08538, 39.95314], data => {
-        dst = data;
-        showCurrentPassenger(src.location, dst.location);
-        getSolution(src.id, dst.id, data => {
-          cars = data.cars;
-          showCars(cars);
-          map.setFitView();
-        });
-      });
+  getNearestNode([117.08276, 39.95343], data => {
+    src = data;
+    getNearestNode([117.08538, 39.95314], data => {
+      dst = data;
+      showCurrentPassenger(src.location, dst.location);
+      map.setFitView();
     });
   });
 });

@@ -1,9 +1,10 @@
 var infoWindow,
   map,
   navi,
-  zooms = [8, 19],
-  center = { lng: 116.442263, lat: 39.835354 },
-  pathSimplifierIns;
+  zooms = [10, 19],
+  center = { lng: 116.397428, lat: 39.90923 },
+  pathSimplifierIns,
+  infoWindow;
 
 var src = null,
   dst = null,
@@ -47,7 +48,6 @@ function newMark(position, icon, label) {
   return new AMap.Marker({
     map: map,
     position: position,
-    topWhenClick: true,
     clickable: true,
     offset: new AMap.Pixel(-12, -27),
     icon: typeof icon == "number" ? markIcon(icon) : icon,
@@ -81,8 +81,17 @@ function showCars(cars) {
         currentCarMark = carMarks[i];
         carMarks[i].setIcon(carActivedIcon);
         showCarPath(i);
+
+        infoWindow.setContent(event.target.content);
+        infoWindow.open(map, event.target.getPosition());
       });
     }
+
+    carMarks[i].content =
+      `<div>距离 ${car.dis.toFixed(2)} km</div>` +
+      `<div>绕路 ${car.detour_dis2.toFixed(2)} km</div>` +
+      `<div>车上乘客绕路 ${car.detour_dis1.toFixed(2)} km</div>`;
+
     carMarks[i].setAngle(car.angle);
     carMarks[i].setPosition(car.location);
     carMarks[i].show();
@@ -125,6 +134,9 @@ function clearMarks(clearSrcDst = false) {
     currentCarMark.setIcon(carIcon);
     currentCarMark = null;
   }
+  if (infoWindow) {
+    infoWindow.close();
+  }
   pathSimplifierIns && pathSimplifierIns.setData(null);
   otherMarks.forEach(mark => mark.hide());
   carMarks.forEach(mark => mark.hide());
@@ -138,20 +150,20 @@ function clearMarks(clearSrcDst = false) {
 }
 
 function onClickActionButton() {
-  if (!src) {
-    $("#btn-action").prop("disabled", true);
-  } else if (!dst) {
-    $("#btn-action").prop("disabled", true);
-  } else {
+  $("#btn-action").prop("disabled", true);
+  if (src && dst) {
+    $("#btn-clear").prop("disabled", true);
+    $("#btn-action").text("查询中...");
     getSolution(src.id, dst.id, data => {
       cars = data.cars;
+      $("#btn-clear").prop("disabled", false);
+      $("#btn-action").text("查询");
       if (!cars.length) {
         alert("没有合适的出租车！");
         return;
       }
       showCars(cars);
       map.setFitView();
-      $("#btn-action").prop("disabled", true);
     });
   }
 }
@@ -184,6 +196,10 @@ function initMap() {
     center: new AMap.LngLat(center.lng, center.lat),
     resizeEnable: true,
     zooms: zooms
+  });
+
+  infoWindow = new AMap.InfoWindow({
+    offset: new AMap.Pixel(0, -10)
   });
 
   map.on("complete", function() {

@@ -61,15 +61,13 @@ void InternetTraffic::startup(const string& dataDir)
 }
 
 /*
-SolutionList InternetTraffic::query(double st_x, double st_y, double ed_x, double ed_y) {
-    const Node *src = NULL, *dst = NULL;
-    src = m_map->getNode(st_x, st_y);
-    dst = m_map->getNode(ed_x, ed_y);
-    return query(src, dst);
+SolutionList InternetTraffic::query(double st_x, double st_y, double ed_x,
+double ed_y) { const Node *src = NULL, *dst = NULL; src = m_map->getNode(st_x,
+st_y); dst = m_map->getNode(ed_x, ed_y); return query(src, dst);
 }
 */
 
-SoutionList InternetTraffic::query(const Node* src, const Node* dst)
+SolutionList InternetTraffic::query(const Node* src, const Node* dst)
 {
     printf("Current passenger's route: %s -> %s\n", src->toString().c_str(),
            dst->toString().c_str());

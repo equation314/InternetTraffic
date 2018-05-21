@@ -146,5 +146,5 @@ Solution Car::query(const Node* src, const Node* dst, const Map* map) const
             path.push_back(m_passengers[i - 3]);
     }
 
-    return Solution(this, path, d2, detour_dis1, detour_dis2);
+    return Solution(this, path, d2, detour_dis2 + d4, detour_dis1, detour_dis2);
 }

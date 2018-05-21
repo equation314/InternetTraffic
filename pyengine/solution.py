@@ -10,6 +10,7 @@ class Solution(object):
         self.car_y  = result[cnt]; cnt += 1
 
         self.dis         = result[cnt]; cnt += 1
+        self.total_dis   = result[cnt]; cnt += 1
         self.detour_dis1 = result[cnt]; cnt += 1
         self.detour_dis2 = result[cnt]; cnt += 1
         self.value       = result[cnt]; cnt += 1

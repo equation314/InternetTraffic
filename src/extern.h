@@ -121,6 +121,7 @@ PyObject* search_node(const Node *src, const Node *dst) {
         }
 
         PyList_Append(single_sol, Py_BuildValue("d", sol.dis        ));
+        PyList_Append(single_sol, Py_BuildValue("d", sol.total_dis  ));
         PyList_Append(single_sol, Py_BuildValue("d", sol.detour_dis1));
         PyList_Append(single_sol, Py_BuildValue("d", sol.detour_dis2));
         PyList_Append(single_sol, Py_BuildValue("d", sol.value      ));

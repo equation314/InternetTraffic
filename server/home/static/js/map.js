@@ -88,9 +88,10 @@ function showCars(cars) {
     }
 
     carMarks[i].content =
-      `<div>距离 ${car.dis.toFixed(2)} km</div>` +
-      `<div>绕路 ${car.detour_dis2.toFixed(2)} km</div>` +
-      `<div>车上乘客绕路 ${car.detour_dis1.toFixed(2)} km</div>`;
+      `<div>车辆距您 ${car.dis.toFixed(2)} km</div>` +
+      `<div>您的行程总距离 ${car.total_dis.toFixed(2)} km</div>` +
+      `<div>您需绕路 ${car.detour_dis2.toFixed(2)} km</div>` +
+      `<div>车上乘客需绕路 ${car.detour_dis1.toFixed(2)} km</div>`;
 
     carMarks[i].setAngle(car.angle);
     carMarks[i].setPosition(car.location);

@@ -22,6 +22,7 @@ def query(srcId, dstId):
             'angle': 90 - atan2(sol.node_y[1] - sol.node_y[0],
                                 sol.node_x[1] - sol.node_x[0]) / pi * 180,
             "dis": sol.dis,
+            "total_dis": sol.total_dis,
             "detour_dis1": sol.detour_dis1,
             "detour_dis2": sol.detour_dis2,
         }

@@ -5,16 +5,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="{% static 'css/style.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css" />
   <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://webapi.amap.com/maps?v=1.4.6&plugin=AMap.Driving"></script>
+  <script src="https://webapi.amap.com/maps?v=1.4.6"></script>
   <script src="https://webapi.amap.com/ui/1.0/main.js"></script>
   <script src="{% static 'js/map.js' %}"></script>
   <title>Internet Traffic</title>
 </head>
 
 <body>
-  <div id="wrap" class="my-map">
-    <div id="mapContainer"></div>
+  <div id="container"></div>
+  <div class="button-group">
+    <input type="button" class="button" value="查询" id="action" />
+    <input type="button" class="button" value="清除" id="clear" />
   </div>
 </body>
 

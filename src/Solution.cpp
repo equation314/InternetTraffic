@@ -7,8 +7,8 @@ void Solution::print() const
 {
     printf("car #%d%s:\n", car->getId(), car->getPos()->toString().c_str());
 
-    printf("\tarrival order:");
-    for (auto node : order)
+    printf("\tpath:");
+    for (auto node : path)
         printf(" %s", node->toString().c_str());
     printf("\n");
 

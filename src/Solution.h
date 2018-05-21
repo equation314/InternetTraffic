@@ -9,15 +9,15 @@ class Car;
 struct Solution
 {
     Solution() : dis(Const::INF) {}
-    Solution(const Car* car, const NodeList& order, double dis,
+    Solution(const Car* car, const NodeList& path, double dis,
              double detour_dis1, double detour_dis2)
-        : car(car), order(order), dis(dis), detour_dis1(detour_dis1),
+        : car(car), path(path), dis(dis), detour_dis1(detour_dis1),
           detour_dis2(detour_dis2), value(dis + detour_dis2)
     {
     }
 
     const Car* car;
-    NodeList order; // arrival order
+    NodeList path;
 
     double dis;         // distance between the car and current passenger
     double detour_dis1; // detour distance of passengers alreay on the car

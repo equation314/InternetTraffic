@@ -35,7 +35,7 @@ PyObject* getList(){
 InternetTraffic* engine  = NULL;
 
 int init(const char *dir) {
-    
+
     if(engine != NULL) {
         printf("[!] Already initialized!\n");
         return -1;
@@ -54,7 +54,7 @@ PyObject* get_node_in_map(double x, double y) {
     PyList_Append(res, Py_BuildValue("i", cur->id));
     PyList_Append(res, Py_BuildValue("d", cur->x));
     PyList_Append(res, Py_BuildValue("d", cur->y));
-    
+
     return res;
 }
 
@@ -106,7 +106,7 @@ PyObject* search_node(const Node *src, const Node *dst) {
         // add car x&y
         PyList_Append(single_sol, Py_BuildValue("d", sol.car->getPos()->x));
         PyList_Append(single_sol, Py_BuildValue("d", sol.car->getPos()->y));
-        
+
         //printf("[*] Total passenger number: %d\n", sol.car->getPassenger()->size());
         for(auto iter = sol.car->getPassenger()->begin(); iter != sol.car->getPassenger()->end(); iter++) {
             PyList_Append(pass_id, Py_BuildValue("i", (*iter)->id));
@@ -114,7 +114,7 @@ PyObject* search_node(const Node *src, const Node *dst) {
             PyList_Append(pass_y, Py_BuildValue("d", (*iter)->y));
         }
 
-        for(auto iter = sol.order.begin(); iter != sol.order.end(); iter++) {
+        for(auto iter = sol.path.begin(); iter != sol.path.end(); iter++) {
             PyList_Append(node_id, Py_BuildValue("i", (*iter)->id));
             PyList_Append(node_x, Py_BuildValue("d",  (*iter)->x));
             PyList_Append(node_y, Py_BuildValue("d",  (*iter)->y));

@@ -49,6 +49,7 @@ int init(const char *dir) {
 }
 
 PyObject* search_xy(double st_x, double st_y, double ed_x, double ed_y) {
+    printf("Pos: (%.2lf, %.2lf) (%.2lf, %.2lf)\n", st_x, st_y, ed_x, ed_y);
     const Node* src = engine->getMap()->getNode(st_x, st_y);
     const Node* dst = engine->getMap()->getNode(ed_x, ed_y);
     return search_node(src, dst);
@@ -72,8 +73,6 @@ int destroy() {
     return 0;
 }
 
-
-
 }
 
 
@@ -81,7 +80,7 @@ PyObject* search_node(const Node *src, const Node *dst) {
     PyObject *ret = PyList_New(0);
 
     SolutionList res = engine->query(src, dst);
-
+    printf("Total solution number: %d\n", res.size());
     for (auto sol : res) {
         PyObject *single_sol = PyList_New(0);
         PyObject *node_x = PyList_New(0);
@@ -93,8 +92,8 @@ PyObject* search_node(const Node *src, const Node *dst) {
         PyList_Append(single_sol, Py_BuildValue("i", sol.car->getId()));
 
         // add car x&y
-        PyList_Append(single_sol, Py_BuildValue("i", sol.car->getPos()->x));
-        PyList_Append(single_sol, Py_BuildValue("i", sol.car->getPos()->y));
+        PyList_Append(single_sol, Py_BuildValue("d", sol.car->getPos()->x));
+        PyList_Append(single_sol, Py_BuildValue("d", sol.car->getPos()->y));
         
         for(auto iter = sol.car->getPassenger()->begin(); iter != sol.car->getPassenger()->end(); iter++) {
             PyList_Append(single_sol, Py_BuildValue("i", (*iter)->id));

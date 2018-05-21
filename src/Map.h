@@ -24,17 +24,21 @@ public:
     /// Get the nearest node by (x, y)
     const Node* getNode(double x, double y) const {
         int i;
-        double mini = 0xffffff, dist= 0xffffff;
+        double mini = 10000000.0, dist= 10000000.0;
         const Node *res = NULL, *cur = NULL;
         for(i = 0; i < m_nodes.size(); i++) {
             cur = m_nodes[i];
-            dist = (x - cur->x) * (x - cur->x) + (y - cur->y) * (y - cur->y);
+            dist = ((x - cur->x)) * ((x - cur->x));
+            dist +=((y - cur->y)) * ((y - cur->y));
+
             //dist = (x - cur.x) * (x - cur.x) + (y - cur.y) * (y - cury);
             if(mini > dist) {
                 mini = dist;
                 res = cur;
             }
         }
+        printf("%.10lf\n", mini);
+        printf("%.10lf, %.10lf\n", res->x, res->y);
         return res;
     }
 

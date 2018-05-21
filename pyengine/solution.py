@@ -14,7 +14,9 @@ class Solution(object):
         self.detour_dis2 = result[cnt]; cnt += 1
         self.value       = result[cnt]; cnt += 1
         
-        self.pass_id= result[cnt]; cnt += 1
+        self.pass_id    = result[cnt]; cnt += 1
+        self.pass_x     = result[cnt]; cnt += 1
+        self.pass_y     = result[cnt]; cnt += 1
         self.node_id    = result[cnt]; cnt += 1
         self.node_x     = result[cnt]; cnt += 1
         self.node_y     = result[cnt]; cnt += 1
@@ -23,6 +25,8 @@ class Solution(object):
         print("Car %d at (%.2f, %.2f)" % (self.car_id, self.car_x, self.car_y))
         print("Passenger ID: ")
         print(self.pass_id)
+        print(self.pass_x)
+        print(self.pass_y)
         print("Route: ")
         print(self.node_x)
         print(self.node_y)

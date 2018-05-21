@@ -97,6 +97,8 @@ PyObject* search_node(const Node *src, const Node *dst) {
         PyObject *node_y = PyList_New(0);
         PyObject *node_id = PyList_New(0);
         PyObject *pass_id = PyList_New(0);
+        PyObject *pass_x = PyList_New(0);
+        PyObject *pass_y = PyList_New(0);
 
         // add car id
         PyList_Append(single_sol, Py_BuildValue("i", sol.car->getId()));
@@ -108,6 +110,8 @@ PyObject* search_node(const Node *src, const Node *dst) {
         //printf("[*] Total passenger number: %d\n", sol.car->getPassenger()->size());
         for(auto iter = sol.car->getPassenger()->begin(); iter != sol.car->getPassenger()->end(); iter++) {
             PyList_Append(pass_id, Py_BuildValue("i", (*iter)->id));
+            PyList_Append(pass_x, Py_BuildValue("d", (*iter)->x));
+            PyList_Append(pass_y, Py_BuildValue("d", (*iter)->y));
         }
 
         for(auto iter = sol.order.begin(); iter != sol.order.end(); iter++) {
@@ -122,6 +126,8 @@ PyObject* search_node(const Node *src, const Node *dst) {
         PyList_Append(single_sol, Py_BuildValue("d", sol.value      ));
 
         PyList_Append(single_sol, pass_id   );
+        PyList_Append(single_sol, pass_x    );
+        PyList_Append(single_sol, pass_y    );
         PyList_Append(single_sol, node_id   );
         PyList_Append(single_sol, node_x    );
         PyList_Append(single_sol, node_y    );

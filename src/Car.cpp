@@ -117,18 +117,18 @@ Solution Car::query(const Node* src, const Node* dst, const Map* map) const
 
     // current passenge is arrived
     int srcId = 0;
+    double car_dis = 0;
     for (auto i : dstIds)
     {
-        if (srcId)
-        {
-            detour_dis2 += disMatrix[i][srcId];
-            srcId = i;
-        }
+        car_dis += disMatrix[i][srcId];
+        srcId = i;
+
         if (i == 1)
-            srcId = 1;
-        if (i == 2)
+            detour_dis2 -= car_dis;
+        else if (i == 2)
             break;
     }
+    detour_dis2 += car_dis;
     // printf("#%d %s %s %s\n", m_id, m_pos->toString().c_str(),
     //        src->toString().c_str(), dst->toString().c_str());
     // printf("\t d1=%lf d2=%lf d3=%lf d4=%lf d3'=%lf\n", d1, d2, d3, d4,
@@ -148,5 +148,5 @@ Solution Car::query(const Node* src, const Node* dst, const Map* map) const
             path.push_back(m_passengers[i - 3]);
     }
 
-    return Solution(this, path, d2, detour_dis2 + d4, detour_dis1, detour_dis2);
+    return Solution(this, path, d2, detour_dis2 + d4, detour_dis1, detour_dis2, car_dis);
 }

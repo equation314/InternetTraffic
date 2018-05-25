@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <cstdio>
+#include <ctime>
 #include <assert.h>
 
 #include "InternetTraffic.h"
@@ -65,13 +66,37 @@ SolutionList InternetTraffic::query(const Node* src, const Node* dst)
     printf("Current passenger's route: %s -> %s\n", src->toString().c_str(),
            dst->toString().c_str());
 
+    int begin_time = clock();
+
+    vector<double> dis(m_cars.size());
+    vector<int> ids;
+
     SolutionList all, res;
-    for (auto car : m_cars)
+    for (int i = 0; i < m_cars.size(); i++)
     {
+        auto car = m_cars[i];
+        if (m_map->distance(src, car->getPos()) <= 10)
+        {
+            double d = m_map->roadmap_distance(src, car->getPos());
+            if (d <= 10)
+            {
+                dis[i] = d;
+                ids.push_back(i);
+            }
+        }
+    }
+    sort(ids.begin(), ids.end(), [&](int a, int b) { return dis[a] < dis[b]; });
+
+    for (auto id : ids)
+    {
+        auto car = m_cars[id];
         Solution sol = car->query(src, dst, m_map);
         if (sol.isOk())
             all.push_back(sol);
         if (all.size() >= 100)
+            break;
+
+        if (1.0 * (clock() - begin_time) / CLOCKS_PER_SEC > 8)
             break;
     }
     printf("%d\n", (int) all.size());

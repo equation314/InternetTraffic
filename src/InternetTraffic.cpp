@@ -60,13 +60,6 @@ void InternetTraffic::startup(const string& dataDir)
     loadCars(dataDir + "/" + CAR_DATA);
 }
 
-/*
-SolutionList InternetTraffic::query(double st_x, double st_y, double ed_x,
-double ed_y) { const Node *src = NULL, *dst = NULL; src = m_map->getNode(st_x,
-st_y); dst = m_map->getNode(ed_x, ed_y); return query(src, dst);
-}
-*/
-
 SolutionList InternetTraffic::query(const Node* src, const Node* dst)
 {
     printf("Current passenger's route: %s -> %s\n", src->toString().c_str(),
@@ -81,11 +74,20 @@ SolutionList InternetTraffic::query(const Node* src, const Node* dst)
         if (all.size() >= 100)
             break;
     }
-    printf("%d\n", all.size());
+    printf("%d\n", (int) all.size());
     sort(all.begin(), all.end());
 
     for (int i = 0; i < 5 && i < all.size(); i++)
+    {
+        NodeList path;
+        for (int j = 0; j < all[i].path.size() - 1; j++)
+            m_map->recover_roadmap_path(all[i].path[j], all[i].path[j + 1],
+                                        path);
+
+        all[i].path = path;
         res.push_back(all[i]);
+    }
+    printf("OK, found %d solutions.\n", (int) res.size());
 
     return res;
 }

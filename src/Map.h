@@ -33,8 +33,7 @@ public:
         const Node *res = NULL, *cur = NULL;
         for(i = 0; i < m_nodes.size(); i++) {
             cur = m_nodes[i];
-            dist = ((x - cur->x)) * ((x - cur->x));
-            dist +=((y - cur->y)) * ((y - cur->y));
+            dist = Location(x, y).earthDistanceTo(cur);
 
             //dist = (x - cur.x) * (x - cur.x) + (y - cur.y) * (y - cury);
             if(mini > dist) {
@@ -54,9 +53,10 @@ public:
 
     double distance(const Node* a, const Node* b) const;
 
-    double roadmap_distance(const Node *a, const Node *b) const;
+    double roadmap_distance(const Node* a, const Node* b) const;
 
-    int recover_roadmap_path(const Node *a, const Node *b, std::vector<const Node*> &order) const;
+    void recover_roadmap_path(const Node* a, const Node* b,
+                              NodeList& order) const;
 
     void load(const std::string& nodeDataFile, const std::string& edgeDataFile);
 

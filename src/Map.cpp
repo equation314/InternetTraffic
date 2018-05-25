@@ -54,13 +54,11 @@ double Map::roadmap_distance(const Node* a, const Node* b) const
     return tree_search(a->id, b->id) / 1000.0;
 }
 
-int Map::recover_roadmap_path(const Node* a, const Node* b,
-                              std::vector<const Node*>& order) const
+void Map::recover_roadmap_path(const Node* a, const Node* b,
+                               NodeList& order) const
 {
     vector<int> ider;
-    int dist = tree_find_path(a->id, b->id, ider);
+    tree_find_path(a->id, b->id, ider);
     for (auto iter = ider.begin(); iter != ider.end(); iter++)
-    {
         order.push_back(m_nodes[*iter]);
-    }
 }

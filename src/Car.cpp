@@ -3,21 +3,6 @@
 
 using namespace std;
 
-const int FACTORIAL[5] = {1, 1, 2, 6, 24};
-const int PERMUTATIONS[5][24][4] = {
-    {},
-    {{0}},
-    {{0, 1}, {1, 0}},
-    {{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}},
-    {
-        {0, 1, 2, 3}, {0, 1, 3, 2}, {0, 2, 1, 3}, {0, 2, 3, 1}, {0, 3, 1, 2},
-        {0, 3, 2, 1}, {1, 0, 2, 3}, {1, 0, 3, 2}, {1, 2, 0, 3}, {1, 2, 3, 0},
-        {1, 3, 0, 2}, {1, 3, 2, 0}, {2, 0, 1, 3}, {2, 0, 3, 1}, {2, 1, 0, 3},
-        {2, 1, 3, 0}, {2, 3, 0, 1}, {2, 3, 1, 0}, {3, 0, 1, 2}, {3, 0, 2, 1},
-        {3, 1, 0, 2}, {3, 1, 2, 0}, {3, 2, 0, 1}, {3, 2, 1, 0},
-    },
-};
-
 Car::Car(int id, const Node* pos, const NodeList& passengers)
     : m_id(id), m_passenger_count(passengers.size()), m_pos(pos),
       m_passengers(passengers)
@@ -46,13 +31,23 @@ double Car::getMinDistance(vector<int>& dstIds, int srcId,
     if (!n)
         return 0;
 
-    for (int i = 0; i < FACTORIAL[n]; i++)
+    for (int i = 0; i < Const::FACTORIAL[n]; i++)
     {
         vector<int> temp;
         double d = 0;
-        for (int j = 0, pred = srcId; j < n; j++)
+        for (int j = 0, pred = srcId, j1 = -1, j2 = -1; j < n; j++)
         {
-            int now = dstIds[PERMUTATIONS[n][i][j]];
+            int now = dstIds[Const::PERMUTATIONS[n][i][j]];
+            if (now == 1)
+                j1 = j;
+            else if (now == 2)
+                j2 = j;
+            if (j1 >= 0 && j2 >= 0 && j1 > j2)
+            {
+                d = Const::INF;
+                break;
+            }
+
             d += disMatrix[pred][now];
             if (d >= res)
                 break;
@@ -113,22 +108,27 @@ Solution Car::query(const Node* src, const Node* dst, const Map* map) const
 
     double d1 = getMinDistance(dstIds, 0, disMatrix);
 
+    dstIds.push_back(1);
     dstIds.push_back(2);
-    double d3 = getMinDistance(dstIds, 1, disMatrix);
+    double d5 = getMinDistance(dstIds, 0, disMatrix);
 
-    double detour_dis1 = d2 + d3 - d1;
+    double detour_dis1 = d5 - d1;
     double detour_dis2 = -d4;
 
     // current passenge is arrived
-    int srcId = 1;
+    int srcId = 0;
     for (auto i : dstIds)
     {
-        detour_dis2 += disMatrix[i][srcId];
-        srcId = i;
+        if (srcId)
+        {
+            detour_dis2 += disMatrix[i][srcId];
+            srcId = i;
+        }
+        if (i == 1)
+            srcId = 1;
         if (i == 2)
             break;
     }
-
     // printf("#%d %s %s %s\n", m_id, m_pos->toString().c_str(),
     //        src->toString().c_str(), dst->toString().c_str());
     // printf("\t d1=%lf d2=%lf d3=%lf d4=%lf d3'=%lf\n", d1, d2, d3, d4,
@@ -137,10 +137,12 @@ Solution Car::query(const Node* src, const Node* dst, const Map* map) const
     if (detour_dis1 > 10 || detour_dis2 > 10)
         return Solution();
 
-    NodeList path = {m_pos, src};
+    NodeList path = {m_pos};
     for (auto i : dstIds)
     {
-        if (i == 2)
+        if (i == 1)
+            path.push_back(src);
+        else if (i == 2)
             path.push_back(dst);
         else
             path.push_back(m_passengers[i - 3]);

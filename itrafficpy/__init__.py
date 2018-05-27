@@ -9,7 +9,7 @@ import sys
 import os
 import platform
 import ctypes
-from pyengine.solution import SolutionList
+from itrafficpy.solution import SolutionList
 
 EXT_NAME = {
     'Darwin': 'dylib',
@@ -18,7 +18,7 @@ EXT_NAME = {
 }
 ROOT_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..')
 lib = ctypes.cdll.LoadLibrary(
-    os.path.join(ROOT_PATH, 'build', 'src', 'libengine.%s' % EXT_NAME[platform.system()]))
+    os.path.join(ROOT_PATH, 'build', 'itrafficpy', 'libitrafficpy.%s' % EXT_NAME[platform.system()]))
 
 engine_search_id_ = lib.search_id
 engine_search_id_.restype = ctypes.py_object
@@ -28,17 +28,22 @@ engine_get_node_in_map_ = lib.get_node_in_map
 engine_get_node_in_map_.restype = ctypes.py_object
 
 # init
+
+
 def init(dir):
     return lib.init(ctypes.create_string_buffer(bytes(dir, "ASCII")))
 
+
 def destroy():
     return lib.destroy()
+
 
 def search_id(srcID, dstID):
     res = engine_search_id_(srcID, dstID)
     sol = SolutionList(res)
     sol.parse()
     return sol
+
 
 def search_xy(st_x, st_y, ed_x, ed_y):
     PARAM = [ctypes.c_double(num) for num in [st_x, st_y, ed_x, ed_y]]
@@ -47,10 +52,12 @@ def search_xy(st_x, st_y, ed_x, ed_y):
     sol.parse()
     return sol
 
+
 def get_node_in_map(x, y):
     PARAM = [ctypes.c_double(num) for num in [x, y]]
     res = engine_get_node_in_map_(*PARAM)
     return res
+
 
 def test(dataDir):
     print("Test init")

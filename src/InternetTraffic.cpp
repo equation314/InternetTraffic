@@ -93,7 +93,7 @@ SolutionList InternetTraffic::query(const Node* src, const Node* dst)
         Solution sol = car->query(src, dst, m_map);
         if (sol.isOk())
             all.push_back(sol);
-        if (all.size() >= 100)
+        if (all.size() >= 200)
             break;
 
         if (1.0 * (clock() - begin_time) / CLOCKS_PER_SEC > 8)

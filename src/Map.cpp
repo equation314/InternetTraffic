@@ -46,6 +46,22 @@ void Map::load(const string& nodeDataFile, const string& edgeDataFile)
     gptree_build();
 }
 
+const Node* Map::getNearestNode(double x, double y) const
+{
+    double mi = Const::INF;
+    const Node* res = nullptr;
+    for (auto node : m_nodes)
+    {
+        double dis = Location(x, y).earthDistanceTo(node);
+        if (dis < mi)
+        {
+            mi = dis;
+            res = node;
+        }
+    }
+    return res;
+}
+
 double Map::distance(const Node* a, const Node* b) const
 {
     return a->earthDistanceTo(b);

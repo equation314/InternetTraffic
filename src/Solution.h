@@ -12,8 +12,7 @@ struct Solution
     Solution(const Car* car, const NodeList& path, double dis, double total_dis,
              double detour_dis1, double detour_dis2, double value)
         : car(car), path(path), dis(dis), total_dis(total_dis),
-          detour_dis1(detour_dis1), detour_dis2(detour_dis2),
-          value(value)
+          detour_dis1(detour_dis1), detour_dis2(detour_dis2), value(value)
     {
     }
 
@@ -25,7 +24,7 @@ struct Solution
     double detour_dis1; // detour distance of passengers alreay on the car
     double detour_dis2; // detour distance of current passenger
 
-    double value;
+    double value; // use for compare
 
     void print() const;
 

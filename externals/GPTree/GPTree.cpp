@@ -2411,11 +2411,14 @@ void save()
 	freopen("/dev/tty","w",stdout);
 	printf("save_over\n");
 }
-void load()
+bool load()
 {
-	freopen("GP_Tree.data","r",stdin);
+	if (!freopen("GP_Tree.data","r",stdin))
+		return false;
+
 	tree.load();
 	freopen("/dev/tty","r",stdin);
+	return true;
 }
 
 class Global_Scheduling//依托于G_Tree的全局调度算法，主要处理拼车的哈密顿路径规划
@@ -2663,10 +2666,13 @@ void gptree_build() {
 	read();
 	Additional_Memory=2*G.n*log2(G.n);
 	printf("G.real_border:%d\n",G.real_node());
-	tree.build();
+
+	if (!load()) {
+		tree.build();
+		save();
+	}
 	TIME_TICK_END
 	TIME_TICK_PRINT("build")
-	save();
 }
 
 int gptree_search(int S, int T) {

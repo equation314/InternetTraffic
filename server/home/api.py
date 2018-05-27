@@ -1,19 +1,19 @@
 import sys
 sys.path.insert(0, "..")
-import pyengine
+import itrafficpy
 from math import atan2, pi
 
-pyengine.init('../data')
+itrafficpy.init('../data')
 
 
 def getNearestNode(lon, lat):
-    res = pyengine.get_node_in_map(lon, lat)
+    res = itrafficpy.get_node_in_map(lon, lat)
     return res
 
 
 def query(srcId, dstId):
     cars = []
-    sols = pyengine.search_id(srcId, dstId)
+    sols = itrafficpy.search_id(srcId, dstId)
     for sol in sols.result:
         car = {
             "location": [sol.car_x, sol.car_y],

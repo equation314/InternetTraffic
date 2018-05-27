@@ -1,11 +1,7 @@
+set(SRCS InternetTraffic.cpp Car.cpp Map.cpp Solution.cpp Node.cpp)
 
-FILE(GLOB SRCS *.cpp *.h)
+add_library(itraffic ${SRCS})
+target_link_libraries(itraffic gptree)
 
-find_package(PythonLibs REQUIRED)
-include_directories(${PYTHON_INCLUDE_DIRS})
-
-add_executable(main ${SRCS})
-target_link_libraries(main ${PYTHON_LIBRARIES} gptree)
-
-add_library(engine SHARED ${SRCS})
-target_link_libraries(engine ${PYTHON_LIBRARIES} gptree)
+add_executable(main main.cpp)
+target_link_libraries(main itraffic)

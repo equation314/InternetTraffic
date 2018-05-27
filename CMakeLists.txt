@@ -9,8 +9,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 include_directories(externals/metis/include)
 include_directories(externals/GPTree)
+include_directories(src)
 
 add_subdirectory(externals/metis)
 add_subdirectory(externals/GPTree)
 
+add_subdirectory(itrafficpy)
 add_subdirectory(src)

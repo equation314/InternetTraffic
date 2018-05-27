@@ -1,6 +1,8 @@
 #include <cstdio>
 #include <assert.h>
 
+#include <GPTree.h>
+
 #include "Map.h"
 
 using namespace std;
@@ -41,7 +43,7 @@ void Map::load(const string& nodeDataFile, const string& edgeDataFile)
 
     fclose(f);
 
-    tree_setup();
+    gptree_build();
 }
 
 double Map::distance(const Node* a, const Node* b) const
@@ -51,14 +53,14 @@ double Map::distance(const Node* a, const Node* b) const
 
 double Map::roadmap_distance(const Node* a, const Node* b) const
 {
-    return tree_search(a->id, b->id) / 1000.0;
+    return gptree_search(a->id, b->id) / 1000.0;
 }
 
 void Map::recover_roadmap_path(const Node* a, const Node* b,
                                NodeList& order) const
 {
     vector<int> ider;
-    tree_find_path(a->id, b->id, ider);
+    gptree_find_path(a->id, b->id, ider);
     for (auto iter = ider.begin(); iter != ider.end(); iter++)
         order.push_back(m_nodes[*iter]);
 }

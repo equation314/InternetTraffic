@@ -10,15 +10,13 @@
 
 extern "C"
 {
-    int init(const char* dir);
+    int startup(const char* dir);
 
-    PyObject* get_node_in_map(double x, double y);
+    PyObject* getNearestNode(double x, double y);
 
-    PyObject* search_xy(double st_x, double st_y, double ed_x, double ed_y);
+    PyObject* query(int srcID, int dstID);
 
-    PyObject* search_id(int srcID, int dstID);
-
-    int destroy();
+    int shutdown();
 }
 
 #endif // _ITRAFFIC_PY_H

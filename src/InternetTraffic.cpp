@@ -3,6 +3,8 @@
 #include <ctime>
 #include <assert.h>
 
+#include <GPTree.h>
+
 #include "InternetTraffic.h"
 
 using namespace std;
@@ -59,6 +61,8 @@ void InternetTraffic::startup(const string& dataDir)
 
     m_map->load(dataDir + "/" + NODE_DATA, dataDir + "/" + EDGE_DATA);
     loadCars(dataDir + "/" + CAR_DATA);
+
+    gptree_build((dataDir + "/").c_str());
 }
 
 SolutionList InternetTraffic::query(const Node* src, const Node* dst)

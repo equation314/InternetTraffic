@@ -6,9 +6,10 @@ int main()
 
     engine->startup("../data");
 
-    int srcId = 2333, dstId = 2334;
-    const Node* src = engine->getMap()->getNode(srcId);
-    const Node* dst = engine->getMap()->getNode(dstId);
+    double srcLon = 117.08276, srcLat = 39.95343;
+    double dstLon = 117.08538, dstLat = 39.95314;
+    const Node* src = engine->getMap()->getNearestNode(srcLon, srcLat);
+    const Node* dst = engine->getMap()->getNearestNode(dstLon, dstLat);
     SolutionList res = engine->query(src, dst);
 
     for (auto sol : res)

@@ -42,8 +42,6 @@ void Map::load(const string& nodeDataFile, const string& edgeDataFile)
         m_edges.push_back(new Edge(getNode(a), getNode(b), len));
 
     fclose(f);
-
-    gptree_build();
 }
 
 const Node* Map::getNearestNode(double x, double y) const

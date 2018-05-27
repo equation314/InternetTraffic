@@ -1,20 +1,20 @@
 import sys
 sys.path.insert(0, "..")
-import itrafficpy
+from itrafficpy import InternetTraffic
 from math import atan2, pi
 
-itrafficpy.init('../data')
+engine = InternetTraffic('../data/')
 
 
 def getNearestNode(lon, lat):
-    res = itrafficpy.get_node_in_map(lon, lat)
+    res = engine.get_nearest_node(lon, lat)
     return res
 
 
 def query(srcId, dstId):
     cars = []
-    sols = itrafficpy.search_id(srcId, dstId)
-    for sol in sols.result:
+    sols = engine.query(srcId, dstId).result
+    for sol in sols:
         car = {
             "location": [sol.car_x, sol.car_y],
             "passengers": list(zip(sol.pass_x, sol.pass_y)),

@@ -3,7 +3,7 @@
 
 #include <vector>
 
-void gptree_build();
+void gptree_build(const char* data_dir);
 
 int gptree_search(int S, int T);
 

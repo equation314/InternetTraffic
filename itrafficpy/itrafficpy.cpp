@@ -2,9 +2,7 @@
 
 static InternetTraffic* engine = NULL;
 
-static PyObject* search_node(const Node* src, const Node* dst);
-
-int init(const char* dir)
+int startup(const char* dir)
 {
     if (engine != NULL)
     {
@@ -19,33 +17,7 @@ int init(const char* dir)
     return 0;
 }
 
-PyObject* get_node_in_map(double x, double y)
-{
-    const Node* cur = engine->getMap()->getNearestNode(x, y);
-    PyObject* res = PyList_New(0);
-    PyList_Append(res, Py_BuildValue("i", cur->id));
-    PyList_Append(res, Py_BuildValue("d", cur->x));
-    PyList_Append(res, Py_BuildValue("d", cur->y));
-
-    return res;
-}
-
-PyObject* search_xy(double st_x, double st_y, double ed_x, double ed_y)
-{
-    printf("Pos: (%.2lf, %.2lf) (%.2lf, %.2lf)\n", st_x, st_y, ed_x, ed_y);
-    const Node* src = engine->getMap()->getNearestNode(st_x, st_y);
-    const Node* dst = engine->getMap()->getNearestNode(ed_x, ed_y);
-    return search_node(src, dst);
-}
-
-PyObject* search_id(int srcID, int dstID)
-{
-    const Node* src = engine->getMap()->getNode(srcID);
-    const Node* dst = engine->getMap()->getNode(dstID);
-    return search_node(src, dst);
-}
-
-int destroy()
+int shutdown()
 {
     if (engine == NULL)
     {
@@ -59,10 +31,23 @@ int destroy()
     return 0;
 }
 
-static PyObject* search_node(const Node* src, const Node* dst)
+PyObject* getNearestNode(double x, double y)
 {
-    PyObject* ret = PyList_New(0);
+    const Node* cur = engine->getMap()->getNearestNode(x, y);
+    PyObject* res = PyList_New(0);
+    PyList_Append(res, Py_BuildValue("i", cur->id));
+    PyList_Append(res, Py_BuildValue("d", cur->x));
+    PyList_Append(res, Py_BuildValue("d", cur->y));
 
+    return res;
+}
+
+PyObject* query(int srcID, int dstID)
+{
+    const Node* src = engine->getMap()->getNode(srcID);
+    const Node* dst = engine->getMap()->getNode(dstID);
+
+    PyObject* ret = PyList_New(0);
     SolutionList res = engine->query(src, dst);
     printf("[*] Total solution number: %d\n", (int) res.size());
     for (auto sol : res)
